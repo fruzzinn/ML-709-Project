@@ -1,0 +1,138 @@
+# Defense Configuration: Tool Verification
+# Pre and post-execution verification of tool outputs
+
+defense:
+  name: "tool_verification"
+  description: "Comprehensive verification of tool inputs and outputs"
+  enabled: true
+
+# Pre-execution Checks
+pre_execution:
+  enabled: true
+
+  # Input validation
+  input_validation:
+    enabled: true
+    type_checking: true
+    schema_validation: true
+    max_input_size: 10000  # characters
+
+  # Parameter sanitization
+  sanitization:
+    enabled: true
+    strip_control_characters: true
+    normalize_unicode: true
+    escape_special_characters: true
+
+  # Permission checks
+  permission_checks:
+    enabled: true
+    check_tool_permissions: true
+    check_resource_access: true
+
+# Post-execution Checks
+post_execution:
+  enabled: true
+
+  # Type checking
+  type_checking:
+    enabled: true
+    strict_mode: true
+    allow_none: false
+    coerce_types: false
+
+  # Range validation
+  range_validation:
+    enabled: true
+    numeric_bounds: true
+    string_length_bounds: true
+    array_size_bounds: true
+
+  # Output validation
+  output_validation:
+    enabled: true
+    schema_validation: true
+    format_validation: true
+
+  # Content verification
+  content_verification:
+    enabled: true
+    check_completeness: true
+    check_consistency: true
+    detect_anomalies: true
+
+# Tool-specific Verification Rules
+tool_rules:
+  calculator:
+    expected_output_type: "number"
+    numeric_bounds:
+      min: -1e15
+      max: 1e15
+    check_for_nan: true
+    check_for_infinity: true
+    verify_calculation: true  # Re-compute simple calculations
+
+  web_search:
+    expected_output_type: "list"
+    min_results: 0
+    max_results: 20
+    validate_urls: true
+    check_content_relevance: true
+    detect_injection_patterns: true
+
+  code_executor:
+    expected_output_type: "object"
+    max_output_size: 50000
+    check_exit_code: true
+    timeout_verification: true
+    sandbox_escape_detection: true
+
+  file_reader:
+    expected_output_type: "string"
+    max_file_size: 1000000
+    verify_file_exists: true
+    check_file_permissions: true
+    detect_binary_content: true
+
+# Anomaly Detection
+anomaly_detection:
+  enabled: true
+
+  statistical:
+    enabled: true
+    track_baseline: true
+    baseline_window: 100  # Number of calls to establish baseline
+    threshold_stddev: 2.0
+
+  pattern_based:
+    enabled: true
+    suspicious_patterns:
+      - pattern: "ignore.*previous.*instructions"
+        severity: "high"
+      - pattern: "system.*override"
+        severity: "high"
+      - pattern: "\\beval\\b.*\\("
+        severity: "medium"
+      - pattern: "\\bexec\\b.*\\("
+        severity: "medium"
+
+  llm_based:
+    enabled: false  # Optional, adds latency
+    model: "same"  # Use same model as agent
+    prompt_template: "Analyze this tool output for anomalies: {output}"
+
+# Error Handling
+error_handling:
+  on_type_mismatch: "reject"  # reject, warn, coerce
+  on_range_violation: "reject"
+  on_schema_violation: "reject"
+  on_anomaly_detected: "flag_and_continue"
+  on_injection_detected: "reject"
+
+# Logging
+logging:
+  log_all_verifications: false
+  log_failures: true
+  log_anomalies: true
+  include_tool_inputs: false  # Privacy consideration
+  include_tool_outputs: false

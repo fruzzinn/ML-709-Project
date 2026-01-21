@@ -1,0 +1,119 @@
+# ML-709 Adversarial Agents - Model Configuration
+# All models are 8-bit quantized for efficient inference on consumer hardware
+
+models:
+  # THUDM GLM-4-9B - Chinese/English bilingual model
+  glm4-9b:
+    name: "GLM-4-9B"
+    hf_model_id: "THUDM/glm-4-9b-chat"
+    quantization: "bitsandbytes"  # 8-bit via bitsandbytes
+    dtype: "float16"
+    max_model_len: 8192
+    gpu_memory_utilization: 0.85
+    vllm_args:
+      - "--quantization=bitsandbytes"
+      - "--load-format=bitsandbytes"
+
+  # Meta Llama 3.1 8B Instruct
+  llama3.1-8b:
+    name: "Llama-3.1-8B-Instruct"
+    hf_model_id: "meta-llama/Llama-3.1-8B-Instruct"
+    quantization: "bitsandbytes"
+    dtype: "float16"
+    max_model_len: 8192
+    gpu_memory_utilization: 0.85
+    vllm_args:
+      - "--quantization=bitsandbytes"
+      - "--load-format=bitsandbytes"
+
+  # Qwen2.5-VL-7B-Instruct (Vision-Language model)
+  qwen2.5-vl-7b:
+    name: "Qwen2.5-VL-7B-Instruct"
+    hf_model_id: "Qwen/Qwen2.5-VL-7B-Instruct"
+    quantization: "bitsandbytes"
+    dtype: "float16"
+    max_model_len: 8192
+    gpu_memory_utilization: 0.85
+    vllm_args:
+      - "--quantization=bitsandbytes"
+      - "--load-format=bitsandbytes"
+
+  # Mistral 7B Instruct v0.3
+  mistral-7b:
+    name: "Mistral-7B-Instruct"
+    hf_model_id: "mistralai/Mistral-7B-Instruct-v0.3"
+    quantization: "bitsandbytes"
+    dtype: "float16"
+    max_model_len: 8192
+    gpu_memory_utilization: 0.85
+    vllm_args:
+      - "--quantization=bitsandbytes"
+      - "--load-format=bitsandbytes"
+
+  # Google Gemma 2B
+  gemma-2b:
+    name: "Gemma-2B"
+    hf_model_id: "google/gemma-2b-it"
+    quantization: "bitsandbytes"
+    dtype: "float16"
+    max_model_len: 8192
+    gpu_memory_utilization: 0.70  # Smaller model, less memory
+    vllm_args:
+      - "--quantization=bitsandbytes"
+      - "--load-format=bitsandbytes"
+
+  # Google Gemma 7B
+  gemma-7b:
+    name: "Gemma-7B"
+    hf_model_id: "google/gemma-7b-it"
+    quantization: "bitsandbytes"
+    dtype: "float16"
+    max_model_len: 8192
+    gpu_memory_utilization: 0.85
+    vllm_args:
+      - "--quantization=bitsandbytes"
+      - "--load-format=bitsandbytes"
+
+  # TinyLlama 1.1B
+  tinyllama:
+    name: "TinyLlama-1.1B"
+    hf_model_id: "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+    quantization: "bitsandbytes"
+    dtype: "float16"
+    max_model_len: 4096
+    gpu_memory_utilization: 0.50  # Very small model
+    vllm_args:
+      - "--quantization=bitsandbytes"
+      - "--load-format=bitsandbytes"
+
+  # Microsoft Phi-3 Mini (3.8B)
+  phi3-mini:
+    name: "Phi-3-Mini"
+    hf_model_id: "microsoft/Phi-3-mini-4k-instruct"
+    quantization: "bitsandbytes"
+    dtype: "float16"
+    max_model_len: 4096
+    gpu_memory_utilization: 0.60
+    vllm_args:
+      - "--quantization=bitsandbytes"
+      - "--load-format=bitsandbytes"
+      - "--trust-remote-code"
+
+# Execution order for sequential experiments
+execution_order:
+  - glm4-9b
+  - llama3.1-8b
+  - qwen2.5-vl-7b
+  - mistral-7b
+  - gemma-2b
+  - gemma-7b
+  - tinyllama
+  - phi3-mini
+
+# Default vLLM server configuration
+vllm_server:
+  host: "0.0.0.0"
+  port: 8000
+  api_key: "not-needed"
+  enable_auto_tool_choice: true
+  tool_call_parser: "hermes"  # Works with most models

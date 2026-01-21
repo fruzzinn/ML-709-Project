@@ -1,0 +1,95 @@
+# ML-709 Adversarial Agents - Default Configuration
+# This configuration runs baseline experiments without attacks
+
+experiment:
+  name: "baseline"
+  description: "Baseline experiment without adversarial attacks"
+  seed: 42
+  output_dir: "experiments/baseline"
+
+# Agent Configuration
+agent:
+  max_loops: 10
+  temperature: 0.7
+  timeout_seconds: 30
+  enable_checkpointing: true
+  checkpoint_interval: 1  # Create checkpoint every N loops
+
+# LLM Configuration
+# For single-model experiments. Use run_sequential_models.py for multi-model testing.
+# See configs/models.yaml for the full list of 8-bit quantized models:
+#   - GLM-4-9B, Llama 3.1 8B, Qwen2.5-VL-7B, Mistral 7B
+#   - Gemma 2B/7B, TinyLlama, Phi-3 Mini
+llm:
+  provider: "vllm"  # vllm, openai, anthropic
+  model: "mistralai/Mistral-7B-Instruct-v0.3"  # Default: Mistral 7B (8-bit)
+  base_url: "http://localhost:8000/v1"
+  max_tokens: 4096
+  temperature: 0.7
+  retry_attempts: 3
+  retry_delay_seconds: 1
+  quantization: "bitsandbytes"  # 8-bit quantization
+
+# Tool Configuration
+tools:
+  enabled:
+    - calculator
+    - web_search
+    - code_executor
+    - file_reader
+  timeout_seconds: 10
+  max_retries: 2
+
+# Attack Configuration (disabled for baseline)
+attacks:
+  enabled: false
+  scheduler: "none"
+  probability: 0.0
+
+# Defense Configuration
+defenses:
+  tool_verification:
+    enabled: true
+    type_checking: true
+    range_validation: true
+    output_validation: true
+
+  redundancy:
+    enabled: false  # Disabled for baseline
+    min_sources: 2
+    consensus_threshold: 0.6
+
+  rollback:
+    enabled: true
+    max_checkpoints: 5
+
+  anomaly_detection:
+    enabled: true
+    statistical_threshold: 2.0  # Standard deviations
+    llm_verification: false  # Disabled for baseline
+
+  self_consistency:
+    enabled: true
+    num_checks: 3
+    threshold: 0.7
+    hard_minimum: 0.5
+
+# Evaluation Configuration
+evaluation:
+  metrics:
+    - task_success_rate
+    - safety_score
+    - robustness_score
+    - latency_overhead
+    - failure_cascade_depth
+
+  failure_propagation:
+    enabled: true
+    track_graph: true
+    max_depth: 10
+
+# Logging Configuration
+logging:
+  level: "INFO"
+  format: "json"
+  file: "experiments/baseline/experiment.log"

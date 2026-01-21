@@ -1,0 +1,57 @@
+name: Experiments
+
+on:
+  workflow_dispatch:
+    inputs:
+      experiment_config:
+        description: 'Configuration file to use'
+        required: true
+        default: 'configs/default.yaml'
+        type: string
+      run_adrs:
+        description: 'Run ADRS optimization loop'
+        required: false
+        default: false
+        type: boolean
+      adrs_generations:
+        description: 'Number of ADRS generations'
+        required: false
+        default: '10'
+        type: string
+
+jobs:
+  run-experiment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Set up Python
+        run: uv python install 3.11
+
+      - name: Install dependencies
+        run: uv sync --all-extras
+
+      - name: Run experiment
+        env:
+          EXPERIMENT_CONFIG: ${{ github.event.inputs.experiment_config }}
+        run: |
+          uv run python scripts/run_experiment.py --config "$EXPERIMENT_CONFIG"
+
+      - name: Run ADRS loop
+        if: ${{ github.event.inputs.run_adrs == 'true' }}
+        env:
+          ADRS_GENERATIONS: ${{ github.event.inputs.adrs_generations }}
+        run: |
+          uv run python scripts/run_adrs_loop.py --generations "$ADRS_GENERATIONS"
+
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: experiment-results
+          path: experiments/
+          retention-days: 30

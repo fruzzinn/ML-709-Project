@@ -1,0 +1,160 @@
+# Defense Configuration: Rollback
+# State checkpointing and recovery mechanisms
+
+defense:
+  name: "rollback"
+  description: "Checkpoint agent state and recover from detected anomalies"
+  enabled: true
+
+# Checkpoint Configuration
+checkpointing:
+  enabled: true
+
+  # When to create checkpoints
+  triggers:
+    - "before_tool_execution"  # Before each tool call
+    - "after_successful_step"  # After completing a reasoning step
+    - "on_state_change"        # When significant state changes occur
+    - "periodic"               # At regular intervals
+
+  # Periodic checkpoint interval
+  periodic_interval: 1  # Every N agent loops
+
+  # What to include in checkpoints
+  checkpoint_contents:
+    agent_state: true
+    memory: true
+    tool_history: true
+    reasoning_trace: true
+    intermediate_results: true
+
+  # Checkpoint storage
+  storage:
+    type: "memory"  # memory, file, database
+    max_checkpoints: 10
+    compression: true
+
+    # For file storage
+    file_config:
+      directory: "experiments/checkpoints"
+      format: "json"
+
+    # For database storage
+    database_config:
+      table: "checkpoints"
+      retention_days: 7
+
+# Rollback Configuration
+rollback:
+  enabled: true
+
+  # Triggers for automatic rollback
+  auto_rollback_triggers:
+    - "anomaly_detected"
+    - "safety_violation"
+    - "tool_failure"
+    - "consistency_check_failed"
+    - "timeout"
+
+  # Rollback strategies
+  strategies:
+    # Immediate rollback to last checkpoint
+    immediate:
+      description: "Rollback to most recent checkpoint"
+      max_retries: 3
+      retry_delay_seconds: 1
+
+    # Gradual rollback (try recent checkpoints first)
+    gradual:
+      description: "Try progressively older checkpoints"
+      max_depth: 5
+      skip_failed_checkpoints: true
+
+    # Selective rollback (only rollback specific components)
+    selective:
+      description: "Rollback only affected components"
+      rollback_state: true
+      rollback_memory: true
+      rollback_tool_history: false  # Keep for debugging
+      rollback_results: true
+
+  # Default strategy
+  default_strategy: "gradual"
+
+# Recovery Configuration
+recovery:
+  # Post-rollback behavior
+  on_rollback:
+    log_incident: true
+    notify: false
+    increment_failure_counter: true
+    blacklist_failed_tool: true  # Temporarily disable problematic tool
+    blacklist_duration_seconds: 60
+
+  # Recovery strategies after rollback
+  recovery_strategies:
+    retry_same_action:
+      enabled: true
+      max_attempts: 2
+      modify_parameters: false
+
+    try_alternative_action:
+      enabled: true
+      use_different_tool: true
+      rephrase_query: true
+
+    skip_and_continue:
+      enabled: true
+      mark_as_failed: true
+      continue_with_partial_results: true
+
+    abort_task:
+      enabled: true
+      trigger_threshold: 5  # Abort after N failed rollbacks
+      return_partial_results: true
+
+# State Validation
+validation:
+  # Validate checkpoint integrity
+  validate_checkpoints: true
+  checksum_verification: true
+
+  # Validate state after rollback
+  post_rollback_validation: true
+  consistency_check: true
+
+# Failure Tracking
+failure_tracking:
+  enabled: true
+
+  # Track failure patterns
+  track_patterns:
+    by_tool: true
+    by_action: true
+    by_input_type: true
+    temporal: true  # Time-based patterns
+
+  # Failure thresholds
+  thresholds:
+    tool_failure_rate: 0.3  # Blacklist tool if >30% failure
+    action_failure_rate: 0.5
+    overall_failure_rate: 0.2
+
+# Performance
+performance:
+  # Minimize checkpoint overhead
+  lazy_checkpointing: true  # Only checkpoint on changes
+  incremental_checkpoints: true  # Store diffs where possible
+  async_checkpoint_storage: true  # Don't block on storage
+
+  # Memory management
+  checkpoint_size_limit_mb: 10
+  prune_old_checkpoints: true
+
+# Logging
+logging:
+  log_checkpoints: true
+  log_rollbacks: true
+  log_recovery_attempts: true
+  include_state_snapshots: false  # Can be large
+  include_failure_analysis: true

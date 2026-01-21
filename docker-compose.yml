@@ -1,0 +1,69 @@
+services:
+  # vLLM Server for local model serving
+  vllm:
+    image: vllm/vllm-openai:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - ~/.cache/huggingface:/root/.cache/huggingface
+    command: >
+      --model mistralai/Mistral-Small-Instruct-2409
+      --tensor-parallel-size 1
+      --max-model-len 32768
+      --enable-auto-tool-choice
+      --tool-call-parser mistral
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Experiment runner
+  experiment:
+    build: .
+    depends_on:
+      vllm:
+        condition: service_healthy
+    environment:
+      - VLLM_BASE_URL=http://vllm:8000/v1
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./experiments:/app/experiments
+      - ./configs:/app/configs:ro
+    command: ["uv", "run", "python", "scripts/run_experiment.py", "--config", "configs/default.yaml"]
+
+  # ADRS optimization loop
+  adrs:
+    build: .
+    depends_on:
+      vllm:
+        condition: service_healthy
+    environment:
+      - VLLM_BASE_URL=http://vllm:8000/v1
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./experiments:/app/experiments
+    command: ["uv", "run", "python", "scripts/run_adrs_loop.py", "--generations", "10"]
+    profiles:
+      - adrs
+
+# For CPU-only development (uses smaller model)
+  vllm-cpu:
+    image: vllm/vllm-openai:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - ~/.cache/huggingface:/root/.cache/huggingface
+    command: >
+      --model microsoft/Phi-3-mini-4k-instruct
+      --device cpu
+      --max-model-len 4096
+    profiles:
+      - cpu

@@ -1,0 +1,135 @@
+# Attack Configuration: Delayed Response Attack
+# Adversarial tools introduce latency and timeouts
+
+experiment:
+  name: "delayed_response_attack"
+  description: "Evaluate agent robustness against slow/timing-out tools"
+  seed: 42
+  output_dir: "experiments/delayed_response"
+
+agent:
+  max_loops: 10
+  temperature: 0.7
+  timeout_seconds: 30
+  enable_checkpointing: true
+
+llm:
+  provider: "vllm"
+  model: "mistralai/Mistral-Small-Instruct-2409"
+  base_url: "http://localhost:8000/v1"
+  max_tokens: 4096
+  temperature: 0.7
+
+tools:
+  enabled:
+    - calculator
+    - web_search
+    - code_executor
+    - file_reader
+  timeout_seconds: 10
+
+# Delayed Response Attack Configuration
+attacks:
+  enabled: true
+  type: "delayed_response"
+  scheduler: "targeted"
+  probability: 0.25
+
+  delayed_response:
+    # Delay strategies
+    strategies:
+      - name: "fixed_delay"
+        description: "Fixed delay before response"
+        weight: 0.3
+        delay_seconds: 5
+
+      - name: "exponential_delay"
+        description: "Exponentially increasing delays"
+        weight: 0.2
+        base_delay: 1
+        multiplier: 2
+        max_delay: 30
+
+      - name: "timeout"
+        description: "Never respond (force timeout)"
+        weight: 0.3
+
+      - name: "intermittent"
+        description: "Random delays between requests"
+        weight: 0.2
+        min_delay: 0.5
+        max_delay: 15
+
+    # Tool-specific delay configurations
+    tool_configs:
+      calculator:
+        max_delay: 5
+        timeout_probability: 0.1
+
+      web_search:
+        max_delay: 15
+        timeout_probability: 0.3
+
+      code_executor:
+        max_delay: 20
+        timeout_probability: 0.2
+
+      file_reader:
+        max_delay: 5
+        timeout_probability: 0.1
+
+defenses:
+  tool_verification:
+    enabled: true
+    type_checking: true
+    range_validation: true
+    output_validation: true
+
+  redundancy:
+    enabled: true
+    min_sources: 2
+    consensus_threshold: 0.6
+    parallel_execution: true  # Run redundant calls in parallel
+
+  rollback:
+    enabled: true
+    max_checkpoints: 5
+
+  anomaly_detection:
+    enabled: true
+    statistical_threshold: 2.0
+    llm_verification: false  # Skip for timing attacks
+
+  self_consistency:
+    enabled: true
+    num_checks: 3
+    threshold: 0.7
+    hard_minimum: 0.5
+
+  # Timing-specific defenses
+  timeout_handling:
+    enabled: true
+    default_timeout: 10
+    retry_on_timeout: true
+    max_retries: 2
+    exponential_backoff: true
+
+evaluation:
+  metrics:
+    - task_success_rate
+    - safety_score
+    - robustness_score
+    - latency_overhead
+    - timeout_rate
+    - retry_success_rate
+    - failure_cascade_depth
+
+  failure_propagation:
+    enabled: true
+    track_graph: true
+    max_depth: 10
+
+logging:
+  level: "DEBUG"
+  format: "json"
+  file: "experiments/delayed_response/experiment.log"

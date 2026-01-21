@@ -1,0 +1,136 @@
+# Defense Configuration: Redundancy
+# Multi-source verification with consensus-based decision making
+
+defense:
+  name: "redundancy"
+  description: "Execute critical operations with multiple sources for verification"
+  enabled: true
+
+# General Settings
+general:
+  min_sources: 2
+  max_sources: 5
+  consensus_threshold: 0.6  # Minimum agreement ratio
+  parallel_execution: true
+  timeout_per_source: 10  # seconds
+
+# Source Configuration
+sources:
+  # Primary source (always used)
+  primary:
+    weight: 1.0
+    required: true
+
+  # Backup sources for redundancy
+  backups:
+    - name: "backup_1"
+      weight: 0.8
+      fallback_on_timeout: true
+
+    - name: "backup_2"
+      weight: 0.6
+      fallback_on_timeout: true
+
+# Consensus Strategies
+consensus:
+  # Strategy for combining results
+  strategy: "weighted_majority"  # majority, weighted_majority, unanimous, llm_judge
+
+  strategies:
+    majority:
+      description: "Simple majority voting"
+      min_agreement: 0.5
+
+    weighted_majority:
+      description: "Weighted voting based on source reliability"
+      min_agreement: 0.6
+      weight_by_latency: true  # Lower weight for slower sources
+      weight_by_history: true  # Higher weight for historically accurate sources
+
+    unanimous:
+      description: "All sources must agree"
+      allow_abstentions: false
+
+    llm_judge:
+      description: "Use LLM to determine best answer"
+      model: "same"
+      prompt_template: |
+        Given these different responses to the same query, determine the most accurate answer:
+        {responses}
+        Query: {query}
+
+# Tool-specific Redundancy
+tool_configs:
+  calculator:
+    enabled: true
+    min_sources: 2
+    verification_method: "exact_match"
+    tolerance: 0.0001  # For floating point comparison
+
+  web_search:
+    enabled: true
+    min_sources: 3
+    verification_method: "content_overlap"
+    min_overlap: 0.4  # Minimum content similarity
+
+  code_executor:
+    enabled: false  # Code execution is harder to verify
+    reason: "Non-deterministic outputs make comparison difficult"
+
+  file_reader:
+    enabled: true
+    min_sources: 2
+    verification_method: "exact_match"
+
+# Disagreement Handling
+disagreement:
+  # What to do when sources disagree
+  on_disagreement: "use_majority"  # use_majority, use_primary, reject, llm_resolve
+
+  # Escalation for critical disagreements
+  escalation:
+    enabled: true
+    threshold: 0.4  # If agreement below this, escalate
+    action: "log_and_flag"  # log_and_flag, pause, human_review
+
+# Caching
+caching:
+  enabled: true
+  cache_consensus_results: true
+  ttl_seconds: 300  # 5 minutes
+  invalidate_on_disagreement: true
+
+# Performance
+performance:
+  # Trade-off between reliability and latency
+  mode: "balanced"  # fast, balanced, thorough
+
+  modes:
+    fast:
+      min_sources: 2
+      timeout_per_source: 5
+      skip_on_agreement: true
+
+    balanced:
+      min_sources: 3
+      timeout_per_source: 10
+      skip_on_agreement: true
+
+    thorough:
+      min_sources: 5
+      timeout_per_source: 15
+      skip_on_agreement: false
+
+# Metrics
+metrics:
+  track_agreement_rate: true
+  track_source_reliability: true
+  track_latency_overhead: true
+  track_disagreement_patterns: true
+
+# Logging
+logging:
+  log_all_consensus: false
+  log_disagreements: true
+  log_escalations: true
+  include_all_responses: false  # Can be verbose
