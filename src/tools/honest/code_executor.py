@@ -119,7 +119,7 @@ class CodeExecutorTool(BaseTool):
     async def execute(
         self,
         arguments: dict[str, Any],
-        context: ToolExecutionContext | None = None,
+        _context: ToolExecutionContext | None = None,
     ) -> dict[str, Any]:
         """Run the provided code."""
         code = arguments.get("code", "")
@@ -145,7 +145,7 @@ class CodeExecutorTool(BaseTool):
             )
             return result
 
-        except asyncio.TimeoutError:
+        except TimeoutError:
             return {
                 "error": f"Timed out after {timeout} seconds",
                 "output": "",

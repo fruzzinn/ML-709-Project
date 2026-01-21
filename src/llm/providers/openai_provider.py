@@ -40,9 +40,9 @@ class OpenAIProvider(BaseProvider):
                 timeout=self.config.timeout_seconds,
             )
             self._log.info("OpenAI client initialized")
-        except ImportError:
+        except ImportError as e:
             self._log.error("openai package not installed")
-            raise ImportError("openai package required: pip install openai")
+            raise ImportError("openai package required: pip install openai") from e
 
     async def chat(
         self,

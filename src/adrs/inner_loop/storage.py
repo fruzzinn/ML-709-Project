@@ -4,11 +4,12 @@ from __future__ import annotations
 
 import json
 import sqlite3
+from collections.abc import Iterator
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Iterator
+from typing import Any
 
 import structlog
 
@@ -373,7 +374,7 @@ class SolutionStorage:
         """Calculate Euclidean distance between behavior descriptors."""
         if len(b1) != len(b2):
             return float("inf")
-        return sum((a - b) ** 2 for a, b in zip(b1, b2)) ** 0.5
+        return sum((a - b) ** 2 for a, b in zip(b1, b2, strict=False)) ** 0.5
 
     def clear(self) -> None:
         """Clear all data (use with caution)."""

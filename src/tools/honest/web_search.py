@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import asyncio
 from typing import Any
 
 import aiohttp
@@ -68,7 +67,7 @@ class WebSearchTool(BaseTool):
     async def execute(
         self,
         arguments: dict[str, Any],
-        context: ToolExecutionContext | None = None,
+        _context: ToolExecutionContext | None = None,
     ) -> dict[str, Any]:
         """Execute the web search."""
         query = arguments.get("query", "")
@@ -162,7 +161,7 @@ class WebSearchTool(BaseTool):
                         "num_results": len(results),
                     }
 
-        except asyncio.TimeoutError:
+        except TimeoutError:
             return {
                 "error": "Search request timed out",
                 "query": query,

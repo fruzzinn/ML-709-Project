@@ -58,9 +58,9 @@ class ClaudeCodeBridgeProvider(BaseProvider):
         self,
         messages: list[dict[str, str]],
         system: str | None = None,
-        tools: list[dict[str, Any]] | None = None,
-        temperature: float = 0.7,
-        max_tokens: int | None = None,
+        _tools: list[dict[str, Any]] | None = None,
+        _temperature: float = 0.7,
+        _max_tokens: int | None = None,
     ) -> ProviderResponse:
         """Send a chat request via Claude CLI.
 
@@ -125,9 +125,9 @@ class ClaudeCodeBridgeProvider(BaseProvider):
                 latency_ms=latency_ms,
             )
 
-        except asyncio.TimeoutError:
+        except TimeoutError as e:
             self._log.error("Claude CLI timed out", timeout=self.config.timeout_seconds)
-            raise RuntimeError(f"Claude CLI timed out after {self.config.timeout_seconds}s")
+            raise RuntimeError(f"Claude CLI timed out after {self.config.timeout_seconds}s") from e
 
         except Exception as e:
             self._log.error("Claude CLI request failed", error=str(e))
@@ -142,8 +142,8 @@ class ClaudeCodeBridgeProvider(BaseProvider):
         """Send a completion request via Claude CLI."""
         return await self.chat(
             messages=[{"role": "user", "content": prompt}],
-            temperature=temperature,
-            max_tokens=max_tokens,
+            _temperature=temperature,
+            _max_tokens=max_tokens,
         )
 
     async def health_check(self) -> bool:

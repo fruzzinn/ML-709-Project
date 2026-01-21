@@ -10,7 +10,6 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-import pandas as pd
 import structlog
 
 from src.adrs.inner_loop.storage import SolutionStorage, StoredSolution
@@ -139,7 +138,7 @@ class ExperimentAnalyzer:
     def analyze_trends(
         self,
         metric: str = "fitness",
-        window_size: int = 5,
+        _window_size: int = 5,
     ) -> TrendAnalysis:
         """Analyze trends across generations."""
         if not self.storage:
@@ -444,7 +443,7 @@ class ExperimentAnalyzer:
         """Calculate Euclidean distance between behavior descriptors."""
         if len(b1) != len(b2):
             return float("inf")
-        return float(np.sqrt(sum((a - b) ** 2 for a, b in zip(b1, b2))))
+        return float(np.sqrt(sum((a - b) ** 2 for a, b in zip(b1, b2, strict=False))))
 
     def _format_text_report(self, report: dict[str, Any]) -> str:
         """Format report as readable text."""

@@ -13,21 +13,20 @@ import structlog
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from src.agent.orchestrator import AgentOrchestrator, AgentConfig, AgentRunInput
+from src.agent.orchestrator import AgentConfig, AgentOrchestrator, AgentRunInput
 from src.attacks.attack_types import PREDEFINED_SCENARIOS
 from src.attacks.scheduler import AttackScheduler, SchedulerStrategy
 from src.defenses.base import DefenseManager
-from src.defenses.tool_verification import ToolVerificationDefense
 from src.defenses.consistency_checker import ConsistencyChecker
 from src.defenses.rollback import RollbackDefense
-from src.evaluation.metrics import MetricsCalculator
+from src.defenses.tool_verification import ToolVerificationDefense
 from src.evaluation.failure_propagation import FailurePropagationAnalyzer
+from src.evaluation.metrics import MetricsCalculator
 from src.evaluation.reporter import ExperimentReporter
 from src.llm.client import LLMClient, LLMConfig
-from src.tools.registry import ToolRegistry
 from src.tools.honest import get_default_tools
+from src.tools.registry import ToolRegistry
 from src.utils.config import load_config
-
 
 logger = structlog.get_logger()
 

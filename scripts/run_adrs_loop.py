@@ -18,13 +18,12 @@ import structlog
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from src.adrs.inner_loop.solution_generator import SolutionGenerator
 from src.adrs.inner_loop.evaluator import SolutionEvaluator
 from src.adrs.inner_loop.selector import MAPElitesSelector
+from src.adrs.inner_loop.solution_generator import SolutionGenerator
 from src.adrs.outer_loop.experiment_manager import ExperimentManager
-from src.llm.providers.claude_code_bridge import ClaudeCodeBridgeProvider
 from src.llm.providers.base import ProviderConfig
-
+from src.llm.providers.claude_code_bridge import ClaudeCodeBridgeProvider
 
 logger = structlog.get_logger()
 

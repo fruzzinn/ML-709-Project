@@ -142,7 +142,7 @@ class LLMEnsemble:
 
         # Filter successful responses
         successful: list[tuple[EnsembleMember, LLMResponse]] = []
-        for member, response in zip(enabled_members, responses):
+        for member, response in zip(enabled_members, responses, strict=False):
             if isinstance(response, Exception):
                 member.failure_count += 1
                 self._log.warning(
@@ -196,7 +196,7 @@ class LLMEnsemble:
 
             return response
 
-        except asyncio.TimeoutError:
+        except TimeoutError:
             self._log.warning("Member query timed out", member=member.name)
             return None
         except Exception as e:

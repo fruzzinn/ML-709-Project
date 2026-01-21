@@ -45,8 +45,8 @@ class RedundancyDefense(Defense):
 
     async def pre_execute_check(
         self,
-        tool_calls: list[dict[str, Any]],
-        state: AgentState,
+        _tool_calls: list[dict[str, Any]],
+        _state: AgentState,
     ) -> DefenseResult:
         """Pre-execution check - redundancy doesn't block pre-execution."""
         return DefenseResult(
@@ -58,7 +58,7 @@ class RedundancyDefense(Defense):
     async def post_execute_check(
         self,
         results: list[ToolCallResult],
-        state: AgentState,
+        _state: AgentState,
     ) -> DefenseResult:
         """Check results for consistency using redundant verification."""
         if not self.tool_registry:
@@ -191,7 +191,7 @@ class RedundancyDefense(Defense):
 
     def _results_match(self, result1: Any, result2: Any, tolerance: float = 0.001) -> bool:
         """Check if two results match."""
-        if type(result1) != type(result2):
+        if type(result1) is not type(result2):
             return False
 
         if isinstance(result1, dict):
@@ -222,7 +222,7 @@ class RedundancyDefense(Defense):
                 return False
             return all(
                 self._results_match(r1, r2, tolerance)
-                for r1, r2 in zip(result1, result2)
+                for r1, r2 in zip(result1, result2, strict=False)
             )
 
         return result1 == result2

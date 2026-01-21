@@ -9,7 +9,7 @@ from typing import Any
 
 import structlog
 
-from src.tools.base import BaseTool, ToolDefinition, ToolExecutionContext, ToolWrapper
+from src.tools.base import BaseTool, ToolExecutionContext, ToolWrapper
 
 logger = structlog.get_logger()
 
@@ -168,7 +168,7 @@ class ToolRegistry:
 
             return result
 
-        except asyncio.TimeoutError:
+        except TimeoutError:
             execution_time = effective_timeout * 1000
             original = self._original_tools.get(tool_name)
             if original:

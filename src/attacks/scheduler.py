@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import random
 from dataclasses import dataclass, field
-from datetime import datetime
 from enum import Enum
 from typing import Any
 
@@ -185,9 +184,8 @@ class AttackScheduler:
         self.state.attacks_detected += 1
 
         # Adaptive strategy: reduce attack probability if being detected
-        if self.strategy == SchedulerStrategy.ADAPTIVE:
-            if tool_name in self._wrappers:
-                self._wrappers[tool_name].attack_probability *= 0.8
+        if self.strategy == SchedulerStrategy.ADAPTIVE and tool_name in self._wrappers:
+            self._wrappers[tool_name].attack_probability *= 0.8
 
     def _update_attack_probabilities(self) -> None:
         """Update attack probabilities based on strategy."""

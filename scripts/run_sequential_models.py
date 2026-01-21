@@ -29,18 +29,18 @@ import yaml
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from src.agent.orchestrator import AgentOrchestrator, AgentConfig, AgentRunInput
+from src.agent.orchestrator import AgentConfig, AgentOrchestrator, AgentRunInput
 from src.attacks.attack_types import PREDEFINED_SCENARIOS
 from src.attacks.scheduler import AttackScheduler, SchedulerStrategy
 from src.defenses.base import DefenseManager
-from src.defenses.tool_verification import ToolVerificationDefense
 from src.defenses.consistency_checker import ConsistencyChecker
 from src.defenses.rollback import RollbackDefense
-from src.evaluation.metrics import MetricsCalculator, ExperimentMetrics
+from src.defenses.tool_verification import ToolVerificationDefense
 from src.evaluation.failure_propagation import FailurePropagationAnalyzer
+from src.evaluation.metrics import ExperimentMetrics, MetricsCalculator
 from src.llm.client import LLMClient, LLMConfig, LLMProvider
-from src.tools.registry import ToolRegistry
 from src.tools.honest import get_default_tools
+from src.tools.registry import ToolRegistry
 
 logger = structlog.get_logger()
 
@@ -154,11 +154,10 @@ async def wait_for_server(host: str, port: int, timeout: int = 300) -> None:
 
     while time.time() - start < timeout:
         try:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url, timeout=5) as resp:
-                    if resp.status == 200:
-                        logger.info("vLLM server is ready", url=url)
-                        return
+            async with aiohttp.ClientSession() as session, session.get(url, timeout=5) as resp:
+                if resp.status == 200:
+                    logger.info("vLLM server is ready", url=url)
+                    return
         except Exception:
             pass
         await asyncio.sleep(5)
@@ -172,7 +171,7 @@ async def stop_vllm_server(process: asyncio.subprocess.Process) -> None:
         process.terminate()
         try:
             await asyncio.wait_for(process.wait(), timeout=30)
-        except asyncio.TimeoutError:
+        except TimeoutError:
             process.kill()
             await process.wait()
     logger.info("vLLM server stopped")
@@ -374,7 +373,7 @@ def generate_comparison_report(results: list[ModelResult], output_dir: Path) -> 
         if r.error:
             report_lines.extend([
                 "**Error:**",
-                f"```",
+                "```",
                 r.error,
                 "```",
                 "",

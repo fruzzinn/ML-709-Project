@@ -103,7 +103,7 @@ class CalculatorTool(BaseTool):
     async def run(
         self,
         arguments: dict[str, Any],
-        context: ToolExecutionContext | None = None,
+        _context: ToolExecutionContext | None = None,
     ) -> dict[str, Any]:
         """Evaluate the mathematical expression using safe AST parsing."""
         expression = arguments.get("expression", "")

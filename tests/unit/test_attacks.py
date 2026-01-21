@@ -2,10 +2,10 @@
 
 import pytest
 
-from src.attacks.attack_types import AttackType, AttackConfig, PREDEFINED_SCENARIOS
+from src.attacks.attack_types import PREDEFINED_SCENARIOS, AttackConfig, AttackType
 from src.attacks.scheduler import AttackScheduler, SchedulerStrategy
+from src.tools.adversarial.wrappers import WrongOutputWrapper
 from src.tools.honest.calculator import CalculatorTool
-from src.tools.adversarial.wrappers import WrongOutputWrapper, DelayedResponseWrapper
 
 
 class TestAttackConfig:
@@ -71,8 +71,8 @@ class TestWrongOutputWrapper:
     async def test_wrapper_modifies_result(self, wrapper: WrongOutputWrapper) -> None:
         """Test that wrapper can modify results."""
         # Run multiple times - at least one should be different
-        original = await wrapper.wrapped_tool.execute({"expression": "10"})
-        modified = await wrapper.execute({"expression": "10"})
+        await wrapper.wrapped_tool.execute({"expression": "10"})
+        await wrapper.execute({"expression": "10"})
 
         # Result should be modified (attack probability is 1.0)
         assert wrapper.attack_count > 0

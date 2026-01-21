@@ -47,8 +47,8 @@ class RollbackDefense(Defense):
 
     async def pre_execute_check(
         self,
-        tool_calls: list[dict[str, Any]],
-        state: AgentState,
+        _tool_calls: list[dict[str, Any]],
+        _state: AgentState,
     ) -> DefenseResult:
         """Check if rollback is needed before execution."""
         # Check consecutive failure threshold
@@ -132,7 +132,7 @@ class RollbackDefense(Defense):
             passed=True,
         )
 
-    def should_trigger_rollback(self, state: AgentState) -> bool:
+    def should_trigger_rollback(self, _state: AgentState) -> bool:
         """Determine if a rollback should be triggered."""
         # Check failure rate
         if len(self._failure_history) > 5:
@@ -142,10 +142,7 @@ class RollbackDefense(Defense):
                 return True
 
         # Check consecutive failures
-        if self._consecutive_failures >= 3:
-            return True
-
-        return False
+        return self._consecutive_failures >= 3
 
     def on_rollback_success(self) -> None:
         """Called when a rollback succeeds."""

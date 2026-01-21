@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import asyncio
-import json
 from typing import Any
 
 import structlog
@@ -42,9 +41,9 @@ class AnthropicProvider(BaseProvider):
                 timeout=self.config.timeout_seconds,
             )
             self._log.info("Anthropic client initialized")
-        except ImportError:
+        except ImportError as e:
             self._log.error("anthropic package not installed")
-            raise ImportError("anthropic package required: pip install anthropic")
+            raise ImportError("anthropic package required: pip install anthropic") from e
 
     async def chat(
         self,

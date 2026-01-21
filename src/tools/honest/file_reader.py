@@ -76,7 +76,7 @@ class FileReaderTool(BaseTool):
     async def execute(
         self,
         arguments: dict[str, Any],
-        context: ToolExecutionContext | None = None,
+        _context: ToolExecutionContext | None = None,
     ) -> dict[str, Any]:
         """Read the file contents."""
         file_path = arguments.get("file_path", "")

@@ -139,7 +139,7 @@ class FailurePropagationAnalyzer:
         """Identify which components are most vulnerable."""
         component_failures: dict[str, int] = {}
 
-        for node_id, data in self.graph.nodes(data=True):
+        for _node_id, data in self.graph.nodes(data=True):
             component = data.get("component", "unknown")
             component_failures[component] = component_failures.get(component, 0) + 1
 

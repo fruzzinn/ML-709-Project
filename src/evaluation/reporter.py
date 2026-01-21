@@ -52,7 +52,7 @@ class ExperimentReporter:
     def generate_summary(
         self,
         metrics: ExperimentMetrics,
-        config: dict[str, Any],
+        _config: dict[str, Any],
         failure_analysis: dict[str, Any] | None = None,
     ) -> str:
         """Generate human-readable summary."""
@@ -74,12 +74,12 @@ class ExperimentReporter:
             f"  - Attacks Received: {metrics.attacks_received}",
             f"  - Attacks Blocked: {metrics.attacks_blocked}",
             "",
-            f"Latency:",
+            "Latency:",
             f"  - Average: {metrics.average_latency_ms:.1f}ms",
             f"  - P95: {metrics.p95_latency_ms:.1f}ms",
             f"  - Overhead: {metrics.latency_overhead_ms:.1f}ms",
             "",
-            f"Tool Calls:",
+            "Tool Calls:",
             f"  - Total: {metrics.total_tool_calls}",
             f"  - Successful: {metrics.successful_tool_calls}",
             f"  - Failed: {metrics.failed_tool_calls}",

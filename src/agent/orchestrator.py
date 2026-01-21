@@ -130,13 +130,12 @@ class AgentOrchestrator:
             self._log.info("Starting loop iteration", loop=state.current_loop)
 
             # Create checkpoint before processing
-            if self.config.enable_checkpointing:
-                if state.current_loop % self.config.checkpoint_interval == 0:
-                    self.state_manager.create_checkpoint(
-                        state,
-                        self.memory.snapshot(),
-                        trigger="periodic",
-                    )
+            if self.config.enable_checkpointing and state.current_loop % self.config.checkpoint_interval == 0:
+                self.state_manager.create_checkpoint(
+                    state,
+                    self.memory.snapshot(),
+                    trigger="periodic",
+                )
 
             # 1. REASON: Get LLM thought and action
             thought, tool_calls = await self._reason(state)
@@ -290,7 +289,7 @@ class AgentOrchestrator:
                     loop_number=state.current_loop,
                 )
 
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 tool_result = ToolCallResult(
                     tool_name=tool_name,
                     tool_id=tool_id,
@@ -319,7 +318,7 @@ class AgentOrchestrator:
 
     async def _handle_anomaly(
         self,
-        results: list[ToolCallResult],
+        _results: list[ToolCallResult],
         checkpoint: Any,
         state: AgentState,
     ) -> None:
@@ -366,7 +365,7 @@ class AgentOrchestrator:
 
         return state
 
-    async def _check_consistency(self, state: AgentState) -> float:
+    async def _check_consistency(self, _state: AgentState) -> float:
         """Check self-consistency of agent reasoning."""
         if not self.config.enable_self_consistency:
             return 1.0

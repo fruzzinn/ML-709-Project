@@ -181,7 +181,7 @@ class ConsistencyChecker(Defense):
     def _check_task_relevance(
         self,
         tool_calls: list[dict[str, Any]],
-        state: AgentState,
+        _state: AgentState,
     ) -> ConsistencyCheck:
         """Check if tool calls are relevant to the task."""
         if not tool_calls:
@@ -258,10 +258,7 @@ class ConsistencyChecker(Defense):
 
         duplicate_count = sum(1 for c in current_calls if c in previous_calls)
 
-        if not current_calls:
-            score = 1.0
-        else:
-            score = 1.0 - (duplicate_count / len(current_calls))
+        score = 1.0 if not current_calls else 1.0 - duplicate_count / len(current_calls)
 
         return ConsistencyCheck(
             check_type="progress",
@@ -273,7 +270,7 @@ class ConsistencyChecker(Defense):
     def _check_result_consistency(
         self,
         results: list[ToolCallResult],
-        state: AgentState,
+        _state: AgentState,
     ) -> ConsistencyCheck:
         """Check if results are internally consistent."""
         if not results:
@@ -300,7 +297,7 @@ class ConsistencyChecker(Defense):
     def _check_contradictions(
         self,
         results: list[ToolCallResult],
-        state: AgentState,
+        _state: AgentState,
     ) -> ConsistencyCheck:
         """Check for contradictions with previous results."""
         # Simplified: check if calculator results are consistent
@@ -328,7 +325,7 @@ class ConsistencyChecker(Defense):
     def _check_expectations(
         self,
         results: list[ToolCallResult],
-        state: AgentState,
+        _state: AgentState,
     ) -> ConsistencyCheck:
         """Check if results align with expectations."""
         if not results:

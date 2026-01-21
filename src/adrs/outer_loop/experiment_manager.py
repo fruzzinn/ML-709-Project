@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
+import heapq
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any
-import heapq
 
-from src.adrs.inner_loop.solution_generator import DefenseSolution
 from src.adrs.inner_loop.evaluator import EvaluationResult
+from src.adrs.inner_loop.solution_generator import DefenseSolution
 
 
 @dataclass(order=True)
@@ -132,9 +132,7 @@ class ExperimentManager:
         evaluation: EvaluationResult,
     ) -> None:
         """Update best solution if this one is better."""
-        if self._best_solution is None:
-            self._best_solution = (solution, evaluation)
-        elif evaluation.fitness_score > self._best_solution[1].fitness_score:
+        if self._best_solution is None or evaluation.fitness_score > self._best_solution[1].fitness_score:
             self._best_solution = (solution, evaluation)
 
     def get_best(self) -> tuple[DefenseSolution, EvaluationResult] | None:

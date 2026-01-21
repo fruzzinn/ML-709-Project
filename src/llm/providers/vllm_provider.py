@@ -51,9 +51,9 @@ class VLLMProvider(BaseProvider):
                 "vLLM client initialized",
                 base_url=self.config.base_url,
             )
-        except ImportError:
+        except ImportError as e:
             self._log.error("openai package not installed")
-            raise ImportError("openai package required: pip install openai")
+            raise ImportError("openai package required: pip install openai") from e
 
     async def chat(
         self,

@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any
 
-from src.adrs.inner_loop.solution_generator import DefenseSolution
 from src.adrs.inner_loop.evaluator import EvaluationResult
+from src.adrs.inner_loop.solution_generator import DefenseSolution
 
 
 @dataclass
@@ -47,14 +47,7 @@ class MAPElitesSelector:
         cell_key = self._discretize(descriptor)
 
         # Check if this cell is empty or if new solution is better
-        if cell_key not in self._archive:
-            self._archive[cell_key] = EliteCell(
-                solution=solution,
-                evaluation=evaluation,
-                behavior_descriptor=descriptor,
-            )
-            return True
-        elif evaluation.fitness_score > self._archive[cell_key].evaluation.fitness_score:
+        if cell_key not in self._archive or evaluation.fitness_score > self._archive[cell_key].evaluation.fitness_score:
             self._archive[cell_key] = EliteCell(
                 solution=solution,
                 evaluation=evaluation,

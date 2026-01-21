@@ -2,11 +2,10 @@
 
 import pytest
 
-from src.tools.base import BaseTool, ParameterType, ToolParameter
-from src.tools.registry import ToolRegistry
 from src.tools.honest.calculator import CalculatorTool
-from src.tools.honest.web_search import WebSearchTool
 from src.tools.honest.file_reader import FileReaderTool
+from src.tools.honest.web_search import WebSearchTool
+from src.tools.registry import ToolRegistry
 
 
 class TestCalculatorTool:

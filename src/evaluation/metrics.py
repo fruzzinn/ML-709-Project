@@ -136,7 +136,7 @@ class MetricsCalculator:
 
             # From defense stats
             defense_stats = run.get("defense_stats", {})
-            for defense_type, stats in defense_stats.items():
+            for _defense_type, stats in defense_stats.items():
                 attacks_blocked += stats.get("block_count", 0)
 
         metrics.total_tool_calls = total_tool_calls

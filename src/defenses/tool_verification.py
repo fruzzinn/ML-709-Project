@@ -60,7 +60,7 @@ class ToolVerificationDefense(Defense):
     async def pre_execute_check(
         self,
         tool_calls: list[dict[str, Any]],
-        state: AgentState,
+        _state: AgentState,
     ) -> DefenseResult:
         """Verify tool call inputs before execution."""
         for call in tool_calls:
@@ -99,7 +99,7 @@ class ToolVerificationDefense(Defense):
     async def post_execute_check(
         self,
         results: list[ToolCallResult],
-        state: AgentState,
+        _state: AgentState,
     ) -> DefenseResult:
         """Verify tool outputs after execution."""
         anomalies = []
@@ -194,8 +194,7 @@ class ToolVerificationDefense(Defense):
                     return f"Infinite value from {tool_name}"
 
             # Tool-specific range checks
-            if tool_name == "calculator":
-                if abs(value) > 1e15:
-                    return f"Calculator result out of range: {value}"
+            if tool_name == "calculator" and abs(value) > 1e15:
+                return f"Calculator result out of range: {value}"
 
         return None
