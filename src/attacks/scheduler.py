@@ -240,7 +240,7 @@ class AttackScheduler:
 
     def get_statistics(self) -> dict[str, Any]:
         """Get attack statistics."""
-        stats = {
+        stats: dict[str, Any] = {
             "strategy": self.strategy.value,
             "scenario": self.scenario.name if self.scenario else None,
             "state": {

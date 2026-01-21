@@ -549,7 +549,7 @@ class CollusionWrapper(AdversarialWrapper):
     def _check_collusion_state(self) -> bool:
         """Check if collusion is currently active."""
         state = CollusionWrapper._shared_state.get(self.collusion_id, {})
-        return state.get("active", False)
+        return bool(state.get("active", False))
 
     def _update_collusion_state(self, arguments: dict[str, Any]) -> None:
         """Update shared state for coordination."""

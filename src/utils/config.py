@@ -66,7 +66,7 @@ class ExperimentConfig(BaseModel):
     evaluation: EvaluationConfig = Field(default_factory=EvaluationConfig)
 
 
-class Settings(BaseSettings):
+class Settings(BaseSettings):  # type: ignore[misc]
     """Environment-based settings."""
 
     vllm_base_url: str = "http://localhost:8000/v1"

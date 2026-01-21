@@ -100,12 +100,13 @@ class CalculatorTool(BaseTool):
             ),
         ]
 
-    async def run(
+    async def execute(
         self,
         arguments: dict[str, Any],
-        _context: ToolExecutionContext | None = None,
-    ) -> dict[str, Any]:
+        context: ToolExecutionContext | None = None,
+    ) -> Any:
         """Evaluate the mathematical expression using safe AST parsing."""
+        del context  # unused
         expression = arguments.get("expression", "")
 
         if not expression:
@@ -135,9 +136,6 @@ class CalculatorTool(BaseTool):
             return {"error": f"Math domain error: {e}", "result": None}
         except Exception as e:
             return {"error": f"Evaluation error: {e}", "result": None}
-
-    # Alias for BaseTool interface
-    execute = run
 
     def _safe_ast_evaluate(self, expression: str) -> float | int:
         """Safely evaluate a mathematical expression using AST parsing.
@@ -169,19 +167,21 @@ class CalculatorTool(BaseTool):
         # Unary operators (-x, +x) - only whitelisted operators
         if isinstance(node, ast.UnaryOp):
             operand = self._evaluate_ast_node(node.operand)
-            op_type = type(node.op)
-            if op_type in self.OPERATORS:
-                return self.OPERATORS[op_type](operand)
-            raise ValueError(f"Unsupported unary operator: {op_type}")
+            op_func = self.OPERATORS.get(type(node.op))
+            if op_func is not None:
+                result: float | int = op_func(operand)  # type: ignore[operator]
+                return result
+            raise ValueError(f"Unsupported unary operator: {type(node.op)}")
 
         # Binary operators (x + y, x * y, etc.)
         if isinstance(node, ast.BinOp):
             left = self._evaluate_ast_node(node.left)
             right = self._evaluate_ast_node(node.right)
-            op_type = type(node.op)
-            if op_type in self.OPERATORS:
-                return self.OPERATORS[op_type](left, right)
-            raise ValueError(f"Unsupported binary operator: {op_type}")
+            op_func = self.OPERATORS.get(type(node.op))
+            if op_func is not None:
+                result = op_func(left, right)  # type: ignore[operator]
+                return float(result) if isinstance(result, float) else int(result)
+            raise ValueError(f"Unsupported binary operator: {type(node.op)}")
 
         # Function calls (sin(x), sqrt(x), etc.)
         if isinstance(node, ast.Call):
@@ -189,7 +189,10 @@ class CalculatorTool(BaseTool):
                 func_name = node.func.id
                 if func_name in self.FUNCTIONS:
                     args = [self._evaluate_ast_node(arg) for arg in node.args]
-                    return self.FUNCTIONS[func_name](*args)
+                    func_result = self.FUNCTIONS[func_name](*args)  # type: ignore[operator]
+                    return (
+                        float(func_result) if isinstance(func_result, float) else int(func_result)
+                    )
                 raise ValueError(f"Unknown function: {func_name}")
             raise ValueError("Only simple function calls are supported")
 

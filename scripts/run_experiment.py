@@ -23,7 +23,7 @@ from src.defenses.tool_verification import ToolVerificationDefense
 from src.evaluation.failure_propagation import FailurePropagationAnalyzer
 from src.evaluation.metrics import MetricsCalculator
 from src.evaluation.reporter import ExperimentReporter
-from src.llm.client import LLMClient, LLMConfig
+from src.llm.client import LLMClient, LLMConfig, LLMProvider
 from src.tools.honest import get_default_tools
 from src.tools.registry import ToolRegistry
 from src.utils.config import load_config
@@ -43,7 +43,7 @@ async def run_experiment(config_path: str) -> None:
 
     # Initialize LLM client
     llm_config = LLMConfig(
-        provider=config.llm.provider,
+        provider=LLMProvider(config.llm.provider),
         model=config.llm.model,
         base_url=config.llm.base_url,
         max_tokens=config.llm.max_tokens,

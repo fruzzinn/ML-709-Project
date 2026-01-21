@@ -259,7 +259,7 @@ async def run_model_experiment(
 
             attack_scenario = PREDEFINED_SCENARIOS.get(scenario_name)
             attack_scheduler = AttackScheduler(
-                strategy=SchedulerStrategy.PROBABILISTIC,
+                strategy=SchedulerStrategy.RANDOM,
                 scenario=attack_scenario,
             )
 

@@ -300,7 +300,7 @@ class ExperimentAnalyzer:
         format: str = "json",
     ) -> str:
         """Generate a comprehensive analysis report."""
-        report = {
+        report: dict[str, Any] = {
             "generated_at": datetime.utcnow().isoformat(),
             "summary": {},
             "trends": {},

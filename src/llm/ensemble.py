@@ -143,7 +143,7 @@ class LLMEnsemble:
         # Filter successful responses
         successful: list[tuple[EnsembleMember, LLMResponse]] = []
         for member, response in zip(enabled_members, responses, strict=False):
-            if isinstance(response, Exception):
+            if isinstance(response, BaseException):
                 member.failure_count += 1
                 self._log.warning(
                     "Member query failed",
@@ -181,7 +181,7 @@ class LLMEnsemble:
         try:
             start_time = asyncio.get_event_loop().time()
 
-            response = await asyncio.wait_for(
+            response: LLMResponse = await asyncio.wait_for(
                 member.client.chat(
                     messages=messages,
                     system=system,

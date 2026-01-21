@@ -211,7 +211,7 @@ class ToolRegistry:
 
     def get_stats(self) -> dict[str, Any]:
         """Get execution statistics for all tools."""
-        stats = {
+        stats: dict[str, Any] = {
             "total_executions": self._execution_count,
             "tools": {},
         }

@@ -362,7 +362,7 @@ class SolutionStorage:
         """Calculate Euclidean distance between behavior descriptors."""
         if len(b1) != len(b2):
             return float("inf")
-        return sum((a - b) ** 2 for a, b in zip(b1, b2, strict=False)) ** 0.5
+        return float(sum((a - b) ** 2 for a, b in zip(b1, b2, strict=False)) ** 0.5)
 
     def clear(self) -> None:
         """Clear all data (use with caution)."""

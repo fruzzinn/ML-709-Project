@@ -210,12 +210,12 @@ class RedundancyDefense(Defense):
             if result1 == 0 and result2 == 0:
                 return True
             if result1 == 0 or result2 == 0:
-                return abs(result1 - result2) < tolerance
-            return abs(result1 - result2) / max(abs(result1), abs(result2)) < tolerance
+                return bool(abs(result1 - result2) < tolerance)
+            return bool(abs(result1 - result2) / max(abs(result1), abs(result2)) < tolerance)
 
         elif isinstance(result1, str):
             # String comparison
-            return result1.strip().lower() == result2.strip().lower()
+            return bool(result1.strip().lower() == result2.strip().lower())
 
         elif isinstance(result1, list):
             # List comparison
@@ -226,7 +226,7 @@ class RedundancyDefense(Defense):
                 for r1, r2 in zip(result1, result2, strict=False)
             )
 
-        return result1 == result2
+        return bool(result1 == result2)
 
     @property
     def stats(self) -> dict[str, Any]:

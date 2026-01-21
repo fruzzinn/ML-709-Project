@@ -71,7 +71,7 @@ class LLMClient:
             )
         return self._client
 
-    @retry(
+    @retry(  # type: ignore[untyped-decorator]
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=1, max=10),
     )
@@ -145,7 +145,8 @@ class LLMClient:
         import json
 
         try:
-            return json.loads(arguments)
+            result: dict[str, Any] = json.loads(arguments)
+            return result
         except json.JSONDecodeError:
             return {"raw": arguments}
 
