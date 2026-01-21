@@ -46,7 +46,7 @@ jobs:
         run: uv sync --all-extras
 
       - name: Run mypy
-        run: uv run mypy src/ --ignore-missing-imports
+        run: uv run mypy src/ scripts/ --config-file pyproject.toml --ignore-missing-imports
 
   test:
     runs-on: ubuntu-latest
