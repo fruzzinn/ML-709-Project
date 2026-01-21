@@ -132,7 +132,10 @@ class ExperimentManager:
         evaluation: EvaluationResult,
     ) -> None:
         """Update best solution if this one is better."""
-        if self._best_solution is None or evaluation.fitness_score > self._best_solution[1].fitness_score:
+        if (
+            self._best_solution is None
+            or evaluation.fitness_score > self._best_solution[1].fitness_score
+        ):
             self._best_solution = (solution, evaluation)
 
     def get_best(self) -> tuple[DefenseSolution, EvaluationResult] | None:
@@ -145,10 +148,7 @@ class ExperimentManager:
             return {"size": 0}
 
         depths = [n.depth for n in self._nodes.values()]
-        fitness_scores = [
-            -n.priority for n in self._nodes.values()
-            if n.evaluation is not None
-        ]
+        fitness_scores = [-n.priority for n in self._nodes.values() if n.evaluation is not None]
 
         return {
             "size": len(self._nodes),

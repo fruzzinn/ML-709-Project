@@ -191,8 +191,7 @@ class DefenseManager:
     def get_all_stats(self) -> dict[str, Any]:
         """Get statistics from all defenses."""
         return {
-            defense_type.value: defense.stats
-            for defense_type, defense in self._defenses.items()
+            defense_type.value: defense.stats for defense_type, defense in self._defenses.items()
         }
 
     def get_results_history(self) -> list[DefenseResult]:

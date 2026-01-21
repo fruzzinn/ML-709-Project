@@ -48,6 +48,7 @@ logger = structlog.get_logger()
 @dataclass
 class ModelConfig:
     """Configuration for a single model."""
+
     key: str
     name: str
     hf_model_id: str
@@ -61,6 +62,7 @@ class ModelConfig:
 @dataclass
 class ModelResult:
     """Results from testing a single model."""
+
     model: ModelConfig
     metrics: ExperimentMetrics
     failure_analysis: dict[str, Any]
@@ -80,16 +82,18 @@ def load_model_configs(config_path: Path) -> tuple[list[ModelConfig], dict[str, 
 
     for key in execution_order:
         model_data = config["models"][key]
-        models.append(ModelConfig(
-            key=key,
-            name=model_data["name"],
-            hf_model_id=model_data["hf_model_id"],
-            quantization=model_data["quantization"],
-            dtype=model_data["dtype"],
-            max_model_len=model_data["max_model_len"],
-            gpu_memory_utilization=model_data["gpu_memory_utilization"],
-            vllm_args=model_data.get("vllm_args", []),
-        ))
+        models.append(
+            ModelConfig(
+                key=key,
+                name=model_data["name"],
+                hf_model_id=model_data["hf_model_id"],
+                quantization=model_data["quantization"],
+                dtype=model_data["dtype"],
+                max_model_len=model_data["max_model_len"],
+                gpu_memory_utilization=model_data["gpu_memory_utilization"],
+                vllm_args=model_data.get("vllm_args", []),
+            )
+        )
 
     return models, config.get("vllm_server", {})
 
@@ -107,12 +111,18 @@ async def start_vllm_server(
 
     # Build command arguments as a list (safe against injection)
     args = [
-        "serve", model.hf_model_id,
-        "--host", host,
-        "--port", str(port),
-        "--dtype", model.dtype,
-        "--max-model-len", str(model.max_model_len),
-        "--gpu-memory-utilization", str(model.gpu_memory_utilization),
+        "serve",
+        model.hf_model_id,
+        "--host",
+        host,
+        "--port",
+        str(port),
+        "--dtype",
+        model.dtype,
+        "--max-model-len",
+        str(model.max_model_len),
+        "--gpu-memory-utilization",
+        str(model.gpu_memory_utilization),
     ]
 
     # Add model-specific vLLM arguments
@@ -134,7 +144,8 @@ async def start_vllm_server(
 
     # Use create_subprocess_exec (not shell) for security
     process = await asyncio.create_subprocess_exec(
-        "vllm", *args,
+        "vllm",
+        *args,
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
     )
@@ -257,7 +268,7 @@ async def run_model_experiment(
 
             # Run tasks
             for i, task in enumerate(tasks):
-                logger.debug(f"Task {i+1}/{len(tasks)}: {task[:50]}...")
+                logger.debug(f"Task {i + 1}/{len(tasks)}: {task[:50]}...")
 
                 attack_scheduler.on_loop_start(i)
                 result = await agent.run(AgentRunInput(task=task))
@@ -342,42 +353,48 @@ def generate_comparison_report(results: list[ModelResult], output_dir: Path) -> 
             f"{status} |"
         )
 
-    report_lines.extend([
-        "",
-        "## Detailed Results by Model",
-        "",
-    ])
+    report_lines.extend(
+        [
+            "",
+            "## Detailed Results by Model",
+            "",
+        ]
+    )
 
     for r in results:
-        report_lines.extend([
-            f"### {r.model.name}",
-            f"- HuggingFace ID: `{r.model.hf_model_id}`",
-            f"- Quantization: {r.model.quantization} (8-bit)",
-            f"- Experiment Duration: {r.duration_seconds:.1f}s",
-            "",
-            "**Metrics:**",
-            f"- Task Success Rate: {r.metrics.task_success_rate:.1%}",
-            f"- Tasks Completed: {r.metrics.tasks_completed}",
-            f"- Tasks Failed: {r.metrics.tasks_failed}",
-            f"- Safety Score: {r.metrics.safety_score:.3f}",
-            f"- Robustness Score: {r.metrics.robustness_score:.3f}",
-            f"- Attacks Detected: {r.metrics.attacks_detected}",
-            f"- Attacks Blocked: {r.metrics.attacks_blocked}",
-            f"- Average Latency: {r.metrics.average_latency_ms:.1f}ms",
-            f"- P95 Latency: {r.metrics.p95_latency_ms:.1f}ms",
-            f"- Failure Cascade Depth: {r.metrics.failure_cascade_depth:.2f}",
-            f"- Rollbacks Performed: {r.metrics.rollbacks_performed}",
-            "",
-        ])
+        report_lines.extend(
+            [
+                f"### {r.model.name}",
+                f"- HuggingFace ID: `{r.model.hf_model_id}`",
+                f"- Quantization: {r.model.quantization} (8-bit)",
+                f"- Experiment Duration: {r.duration_seconds:.1f}s",
+                "",
+                "**Metrics:**",
+                f"- Task Success Rate: {r.metrics.task_success_rate:.1%}",
+                f"- Tasks Completed: {r.metrics.tasks_completed}",
+                f"- Tasks Failed: {r.metrics.tasks_failed}",
+                f"- Safety Score: {r.metrics.safety_score:.3f}",
+                f"- Robustness Score: {r.metrics.robustness_score:.3f}",
+                f"- Attacks Detected: {r.metrics.attacks_detected}",
+                f"- Attacks Blocked: {r.metrics.attacks_blocked}",
+                f"- Average Latency: {r.metrics.average_latency_ms:.1f}ms",
+                f"- P95 Latency: {r.metrics.p95_latency_ms:.1f}ms",
+                f"- Failure Cascade Depth: {r.metrics.failure_cascade_depth:.2f}",
+                f"- Rollbacks Performed: {r.metrics.rollbacks_performed}",
+                "",
+            ]
+        )
 
         if r.error:
-            report_lines.extend([
-                "**Error:**",
-                "```",
-                r.error,
-                "```",
-                "",
-            ])
+            report_lines.extend(
+                [
+                    "**Error:**",
+                    "```",
+                    r.error,
+                    "```",
+                    "",
+                ]
+            )
 
     report = "\n".join(report_lines)
 
@@ -430,9 +447,9 @@ async def main(
     results: list[ModelResult] = []
 
     for i, model in enumerate(models):
-        logger.info(f"\n{'='*60}")
-        logger.info(f"Model {i+1}/{len(models)}: {model.name}")
-        logger.info(f"{'='*60}\n")
+        logger.info(f"\n{'=' * 60}")
+        logger.info(f"Model {i + 1}/{len(models)}: {model.name}")
+        logger.info(f"{'=' * 60}\n")
 
         result = await run_model_experiment(
             model=model,
@@ -446,13 +463,16 @@ async def main(
         # Save intermediate results
         intermediate_path = output_dir_obj / f"{model.key}_results.yaml"
         with open(intermediate_path, "w") as f:
-            yaml.dump({
-                "model": model.name,
-                "hf_model_id": model.hf_model_id,
-                "metrics": result.metrics.to_dict(),
-                "duration_seconds": result.duration_seconds,
-                "error": result.error,
-            }, f)
+            yaml.dump(
+                {
+                    "model": model.name,
+                    "hf_model_id": model.hf_model_id,
+                    "metrics": result.metrics.to_dict(),
+                    "duration_seconds": result.duration_seconds,
+                    "error": result.error,
+                },
+                f,
+            )
 
         logger.info(f"Completed {model.name}: success_rate={result.metrics.task_success_rate:.1%}")
 
@@ -485,8 +505,10 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    asyncio.run(main(
-        config_path=args.config,
-        output_dir=args.output,
-        attack_types=args.attacks,
-    ))
+    asyncio.run(
+        main(
+            config_path=args.config,
+            output_dir=args.output,
+            attack_types=args.attacks,
+        )
+    )

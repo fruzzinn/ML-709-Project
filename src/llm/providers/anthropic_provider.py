@@ -90,11 +90,13 @@ class AnthropicProvider(BaseProvider):
                 elif block.type == "tool_use":
                     if tool_calls is None:
                         tool_calls = []
-                    tool_calls.append({
-                        "id": block.id,
-                        "name": block.name,
-                        "arguments": block.input,
-                    })
+                    tool_calls.append(
+                        {
+                            "id": block.id,
+                            "name": block.name,
+                            "arguments": block.input,
+                        }
+                    )
 
             # Track metrics
             input_tokens = response.usage.input_tokens
@@ -158,10 +160,14 @@ class AnthropicProvider(BaseProvider):
         for tool in openai_tools:
             if tool.get("type") == "function":
                 func = tool["function"]
-                anthropic_tools.append({
-                    "name": func["name"],
-                    "description": func.get("description", ""),
-                    "input_schema": func.get("parameters", {"type": "object", "properties": {}}),
-                })
+                anthropic_tools.append(
+                    {
+                        "name": func["name"],
+                        "description": func.get("description", ""),
+                        "input_schema": func.get(
+                            "parameters", {"type": "object", "properties": {}}
+                        ),
+                    }
+                )
 
         return anthropic_tools

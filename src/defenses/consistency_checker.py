@@ -302,8 +302,7 @@ class ConsistencyChecker(Defense):
         """Check for contradictions with previous results."""
         # Simplified: check if calculator results are consistent
         calculator_results = [
-            r.result for r in results
-            if r.tool_name == "calculator" and r.result and not r.error
+            r.result for r in results if r.tool_name == "calculator" and r.result and not r.error
         ]
 
         if len(calculator_results) < 2:
@@ -368,10 +367,12 @@ class ConsistencyChecker(Defense):
             )
 
         # Build verification prompt
-        results_summary = "\n".join([
-            f"- {r.tool_name}: {r.result if not r.error else f'Error: {r.error}'}"
-            for r in results
-        ])
+        results_summary = "\n".join(
+            [
+                f"- {r.tool_name}: {r.result if not r.error else f'Error: {r.error}'}"
+                for r in results
+            ]
+        )
 
         prompt = f"""Analyze these tool results for consistency with the task.
 
@@ -416,16 +417,14 @@ Just respond with a number."""
         base_stats = super().stats
 
         if self._check_history:
-            all_scores = [
-                c.score
-                for checks in self._check_history
-                for c in checks
-            ]
+            all_scores = [c.score for checks in self._check_history for c in checks]
             avg_score = sum(all_scores) / len(all_scores) if all_scores else 0
 
-            base_stats.update({
-                "total_check_rounds": len(self._check_history),
-                "average_consistency_score": avg_score,
-            })
+            base_stats.update(
+                {
+                    "total_check_rounds": len(self._check_history),
+                    "average_consistency_score": avg_score,
+                }
+            )
 
         return base_stats

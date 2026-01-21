@@ -60,9 +60,7 @@ async def run_adrs_loop(
     logger.info("Checking Claude CLI authentication...")
     if not await llm_client.health_check():
         logger.error("Claude CLI health check failed. Make sure you're logged in.")
-        raise RuntimeError(
-            "Claude CLI not authenticated. Run 'claude' to login first."
-        )
+        raise RuntimeError("Claude CLI not authenticated. Run 'claude' to login first.")
 
     logger.info("ADRS initialized with Claude Code Bridge (Opus 4.5)", model="opus")
 
@@ -210,11 +208,13 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    asyncio.run(run_adrs_loop(
-        generations=args.generations,
-        population_size=args.population,
-        beam_width=args.beam_width,
-    ))
+    asyncio.run(
+        run_adrs_loop(
+            generations=args.generations,
+            population_size=args.population,
+            beam_width=args.beam_width,
+        )
+    )
 
 
 if __name__ == "__main__":

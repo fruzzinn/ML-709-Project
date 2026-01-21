@@ -109,9 +109,11 @@ class ToolRegistry:
             raise ValueError(f"Tool not found: {tool_name}")
 
         # Validate arguments
-        is_valid, error = tool.wrapped_tool.validate_arguments(arguments) if isinstance(
-            tool, ToolWrapper
-        ) else tool.validate_arguments(arguments)
+        is_valid, error = (
+            tool.wrapped_tool.validate_arguments(arguments)
+            if isinstance(tool, ToolWrapper)
+            else tool.validate_arguments(arguments)
+        )
 
         if not is_valid:
             raise ValueError(f"Invalid arguments: {error}")

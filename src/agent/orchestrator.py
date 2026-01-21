@@ -130,7 +130,10 @@ class AgentOrchestrator:
             self._log.info("Starting loop iteration", loop=state.current_loop)
 
             # Create checkpoint before processing
-            if self.config.enable_checkpointing and state.current_loop % self.config.checkpoint_interval == 0:
+            if (
+                self.config.enable_checkpointing
+                and state.current_loop % self.config.checkpoint_interval == 0
+            ):
                 self.state_manager.create_checkpoint(
                     state,
                     self.memory.snapshot(),
@@ -219,9 +222,7 @@ class AgentOrchestrator:
             metrics=self._compute_metrics(state),
         )
 
-    async def _reason(
-        self, state: AgentState
-    ) -> tuple[str, list[dict[str, Any]]]:
+    async def _reason(self, state: AgentState) -> tuple[str, list[dict[str, Any]]]:
         """Generate thought and determine next actions using LLM."""
         # Build prompt with current context
         system_prompt = self._build_system_prompt()
@@ -378,8 +379,7 @@ class AgentOrchestrator:
 
         # Basic consistency: no errors in recent results
         error_count = sum(
-            1 for r in recent_results
-            if isinstance(r.value, dict) and r.value.get("error")
+            1 for r in recent_results if isinstance(r.value, dict) and r.value.get("error")
         )
 
         consistency = 1.0 - (error_count / len(recent_results))
@@ -414,19 +414,19 @@ When you have enough information to answer, provide your final response without 
         # Add memory context if relevant
         if self.memory.size > 0:
             memory_context = self.memory.to_context_string(max_entries=10)
-            messages.append({
-                "role": "system",
-                "content": f"Current context:\n{memory_context}",
-            })
+            messages.append(
+                {
+                    "role": "system",
+                    "content": f"Current context:\n{memory_context}",
+                }
+            )
 
         return messages
 
     def _compute_metrics(self, state: AgentState) -> dict[str, Any]:
         """Compute execution metrics."""
         total_execution_time = sum(
-            r.execution_time_ms
-            for step in state.reasoning_steps
-            for r in step.tool_results
+            r.execution_time_ms for step in state.reasoning_steps for r in step.tool_results
         )
 
         return {

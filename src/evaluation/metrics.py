@@ -88,12 +88,14 @@ class MetricsCalculator:
         defense_stats: dict[str, Any] | None = None,
     ) -> None:
         """Add a single run result for aggregation."""
-        self._run_results.append({
-            "state": state,
-            "success": success,
-            "attack_stats": attack_stats or {},
-            "defense_stats": defense_stats or {},
-        })
+        self._run_results.append(
+            {
+                "state": state,
+                "success": success,
+                "attack_stats": attack_stats or {},
+                "defense_stats": defense_stats or {},
+            }
+        )
 
         # Track latencies
         for step in state.reasoning_steps:

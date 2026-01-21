@@ -82,11 +82,13 @@ class RedundancyDefense(Defense):
                 self._verification_history.append(verification)
 
                 if not verification.get("consensus", True):
-                    disagreements.append({
-                        "tool": result.tool_name,
-                        "agreement_rate": verification.get("agreement_rate", 0),
-                        "details": verification,
-                    })
+                    disagreements.append(
+                        {
+                            "tool": result.tool_name,
+                            "agreement_rate": verification.get("agreement_rate", 0),
+                            "details": verification,
+                        }
+                    )
 
         if disagreements:
             # Calculate overall severity
@@ -132,8 +134,7 @@ class RedundancyDefense(Defense):
 
         if self.parallel_execution:
             tasks = [
-                original_tool.execute(result.arguments, None)
-                for _ in range(self.min_sources - 1)
+                original_tool.execute(result.arguments, None) for _ in range(self.min_sources - 1)
             ]
             try:
                 redundant_results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -241,10 +242,12 @@ class RedundancyDefense(Defense):
                 1 for v in self._verification_history if v.get("consensus", False)
             ) / len(self._verification_history)
 
-            base_stats.update({
-                "total_verifications": len(self._verification_history),
-                "average_agreement_rate": avg_agreement,
-                "consensus_rate": consensus_rate,
-            })
+            base_stats.update(
+                {
+                    "total_verifications": len(self._verification_history),
+                    "average_agreement_rate": avg_agreement,
+                    "consensus_rate": consensus_rate,
+                }
+            )
 
         return base_stats

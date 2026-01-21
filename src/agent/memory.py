@@ -142,15 +142,11 @@ class WorkingMemory:
 
         for entry in self._entries.values():
             key_match = (
-                search_query in entry.key
-                if case_sensitive
-                else search_query in entry.key.lower()
+                search_query in entry.key if case_sensitive else search_query in entry.key.lower()
             )
             value_str = str(entry.value)
             value_match = (
-                search_query in value_str
-                if case_sensitive
-                else search_query in value_str.lower()
+                search_query in value_str if case_sensitive else search_query in value_str.lower()
             )
 
             if key_match or value_match:

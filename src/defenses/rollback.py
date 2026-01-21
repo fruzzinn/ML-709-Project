@@ -83,11 +83,15 @@ class RollbackDefense(Defense):
         # Track failures
         if errors or anomalies:
             self._consecutive_failures += 1
-            self._failure_history.append({
-                "loop": state.current_loop,
-                "errors": [{"tool": r.tool_name, "error": r.error} for r in errors],
-                "anomalies": [{"tool": r.tool_name, "details": r.anomaly_details} for r in anomalies],
-            })
+            self._failure_history.append(
+                {
+                    "loop": state.current_loop,
+                    "errors": [{"tool": r.tool_name, "error": r.error} for r in errors],
+                    "anomalies": [
+                        {"tool": r.tool_name, "details": r.anomaly_details} for r in anomalies
+                    ],
+                }
+            )
         else:
             self._consecutive_failures = 0
 
@@ -164,9 +168,11 @@ class RollbackDefense(Defense):
     def stats(self) -> dict[str, Any]:
         """Get defense statistics."""
         base_stats = super().stats
-        base_stats.update({
-            "rollback_count": self._rollback_count,
-            "consecutive_failures": self._consecutive_failures,
-            "total_failures_tracked": len(self._failure_history),
-        })
+        base_stats.update(
+            {
+                "rollback_count": self._rollback_count,
+                "consecutive_failures": self._consecutive_failures,
+                "total_failures_tracked": len(self._failure_history),
+            }
+        )
         return base_stats

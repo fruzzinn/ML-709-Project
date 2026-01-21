@@ -49,8 +49,7 @@ class ClaudeCodeBridgeProvider(BaseProvider):
         claude_path = shutil.which("claude")
         if not claude_path:
             raise RuntimeError(
-                "Claude CLI not found. Please install Claude Code: "
-                "https://claude.ai/code"
+                "Claude CLI not found. Please install Claude Code: https://claude.ai/code"
             )
         return claude_path
 
@@ -75,8 +74,10 @@ class ClaudeCodeBridgeProvider(BaseProvider):
         # Build CLI arguments as a list (safe against injection)
         args = [
             "-p",  # Print mode (non-interactive)
-            "--model", self.config.model or self.DEFAULT_MODEL,
-            "--output-format", "json",
+            "--model",
+            self.config.model or self.DEFAULT_MODEL,
+            "--output-format",
+            "json",
             "--dangerously-skip-permissions",  # We're just doing inference
             prompt,
         ]
@@ -152,8 +153,10 @@ class ClaudeCodeBridgeProvider(BaseProvider):
             process = await asyncio.create_subprocess_exec(
                 self._claude_path,
                 "-p",
-                "--model", "haiku",  # Use cheapest model for health check
-                "--output-format", "json",
+                "--model",
+                "haiku",  # Use cheapest model for health check
+                "--output-format",
+                "json",
                 "Say 'ok' and nothing else.",
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,

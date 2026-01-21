@@ -154,9 +154,7 @@ class SolutionStorage:
     def get_solution(self, solution_id: int) -> StoredSolution | None:
         """Retrieve a solution by ID."""
         with self._get_connection() as conn:
-            row = conn.execute(
-                "SELECT * FROM solutions WHERE id = ?", (solution_id,)
-            ).fetchone()
+            row = conn.execute("SELECT * FROM solutions WHERE id = ?", (solution_id,)).fetchone()
 
         if not row:
             return None
@@ -317,29 +315,19 @@ class SolutionStorage:
     def get_statistics(self) -> dict[str, Any]:
         """Get storage statistics."""
         with self._get_connection() as conn:
-            total_solutions = conn.execute(
-                "SELECT COUNT(*) FROM solutions"
-            ).fetchone()[0]
+            total_solutions = conn.execute("SELECT COUNT(*) FROM solutions").fetchone()[0]
 
-            total_evaluations = conn.execute(
-                "SELECT COUNT(*) FROM evaluations"
-            ).fetchone()[0]
+            total_evaluations = conn.execute("SELECT COUNT(*) FROM evaluations").fetchone()[0]
 
-            total_experiments = conn.execute(
-                "SELECT COUNT(*) FROM experiments"
-            ).fetchone()[0]
+            total_experiments = conn.execute("SELECT COUNT(*) FROM experiments").fetchone()[0]
 
-            max_generation = conn.execute(
-                "SELECT MAX(generation) FROM solutions"
-            ).fetchone()[0] or 0
+            max_generation = (
+                conn.execute("SELECT MAX(generation) FROM solutions").fetchone()[0] or 0
+            )
 
-            avg_fitness = conn.execute(
-                "SELECT AVG(fitness) FROM solutions"
-            ).fetchone()[0] or 0
+            avg_fitness = conn.execute("SELECT AVG(fitness) FROM solutions").fetchone()[0] or 0
 
-            best_fitness = conn.execute(
-                "SELECT MAX(fitness) FROM solutions"
-            ).fetchone()[0] or 0
+            best_fitness = conn.execute("SELECT MAX(fitness) FROM solutions").fetchone()[0] or 0
 
         return {
             "total_solutions": total_solutions,

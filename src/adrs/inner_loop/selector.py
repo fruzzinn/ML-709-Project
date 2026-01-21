@@ -47,7 +47,10 @@ class MAPElitesSelector:
         cell_key = self._discretize(descriptor)
 
         # Check if this cell is empty or if new solution is better
-        if cell_key not in self._archive or evaluation.fitness_score > self._archive[cell_key].evaluation.fitness_score:
+        if (
+            cell_key not in self._archive
+            or evaluation.fitness_score > self._archive[cell_key].evaluation.fitness_score
+        ):
             self._archive[cell_key] = EliteCell(
                 solution=solution,
                 evaluation=evaluation,
@@ -67,10 +70,7 @@ class MAPElitesSelector:
 
     def _discretize(self, descriptor: tuple[float, ...]) -> tuple[int, ...]:
         """Discretize continuous behavior descriptor to grid cell."""
-        return tuple(
-            min(int(d * self.resolution), self.resolution - 1)
-            for d in descriptor
-        )
+        return tuple(min(int(d * self.resolution), self.resolution - 1) for d in descriptor)
 
     def select_for_mutation(self, n: int = 1) -> list[DefenseSolution]:
         """Select solutions for mutation (uniform random from archive)."""

@@ -103,11 +103,13 @@ class VLLMProvider(BaseProvider):
                     except json.JSONDecodeError:
                         arguments = {"raw": tc.function.arguments}
 
-                    tool_calls.append({
-                        "id": tc.id,
-                        "name": tc.function.name,
-                        "arguments": arguments,
-                    })
+                    tool_calls.append(
+                        {
+                            "id": tc.id,
+                            "name": tc.function.name,
+                            "arguments": arguments,
+                        }
+                    )
 
             # Track metrics
             tokens = 0
@@ -124,7 +126,9 @@ class VLLMProvider(BaseProvider):
                     "prompt_tokens": response.usage.prompt_tokens if response.usage else 0,
                     "completion_tokens": response.usage.completion_tokens if response.usage else 0,
                     "total_tokens": tokens,
-                } if hasattr(response, "usage") and response.usage else None,
+                }
+                if hasattr(response, "usage") and response.usage
+                else None,
                 model=response.model if hasattr(response, "model") else self.config.model,
                 latency_ms=latency_ms,
                 raw_response=response,
@@ -166,7 +170,9 @@ class VLLMProvider(BaseProvider):
                     "prompt_tokens": response.usage.prompt_tokens if response.usage else 0,
                     "completion_tokens": response.usage.completion_tokens if response.usage else 0,
                     "total_tokens": tokens,
-                } if response.usage else None,
+                }
+                if response.usage
+                else None,
                 model=response.model if hasattr(response, "model") else self.config.model,
                 latency_ms=latency_ms,
                 raw_response=response,

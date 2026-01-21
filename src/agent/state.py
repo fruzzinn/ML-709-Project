@@ -181,9 +181,7 @@ class StateManager:
                 return cp
         return None
 
-    def rollback_to_checkpoint(
-        self, checkpoint: Checkpoint
-    ) -> tuple[AgentState, dict[str, Any]]:
+    def rollback_to_checkpoint(self, checkpoint: Checkpoint) -> tuple[AgentState, dict[str, Any]]:
         """Rollback to a specific checkpoint."""
         # Remove checkpoints after the rollback point
         idx = self._checkpoints.index(checkpoint)

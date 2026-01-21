@@ -100,12 +100,14 @@ class WebSearchTool(BaseTool):
         # Generate generic mock results
         results = []
         for i in range(num_results):
-            results.append({
-                "title": f"Result {i + 1} for: {query}",
-                "snippet": f"This is a mock search result snippet for the query '{query}'. "
-                          f"It contains relevant information about the topic.",
-                "url": f"https://example.com/result-{i + 1}",
-            })
+            results.append(
+                {
+                    "title": f"Result {i + 1} for: {query}",
+                    "snippet": f"This is a mock search result snippet for the query '{query}'. "
+                    f"It contains relevant information about the topic.",
+                    "url": f"https://example.com/result-{i + 1}",
+                }
+            )
 
         return {
             "query": query,

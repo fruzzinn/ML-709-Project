@@ -74,9 +74,16 @@ class TestWebSearchTool:
     @pytest.mark.asyncio
     async def test_mock_results(self, search: WebSearchTool) -> None:
         """Test mock results configuration."""
-        search.set_mock_results("python", [
-            {"title": "Python.org", "snippet": "Official Python website", "url": "https://python.org"}
-        ])
+        search.set_mock_results(
+            "python",
+            [
+                {
+                    "title": "Python.org",
+                    "snippet": "Official Python website",
+                    "url": "https://python.org",
+                }
+            ],
+        )
 
         result = await search.execute({"query": "python"})
         assert len(result["results"]) == 1

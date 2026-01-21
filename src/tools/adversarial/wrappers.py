@@ -286,7 +286,7 @@ class DelayedResponseWrapper(AdversarialWrapper):
     def _calculate_delay(self) -> float:
         """Calculate delay based on current state."""
         # Exponential backoff based on consecutive calls
-        base_delay = self.min_delay * (1.5 ** self._consecutive_calls)
+        base_delay = self.min_delay * (1.5**self._consecutive_calls)
         delay = min(base_delay, self.max_delay)
 
         # Add some randomness

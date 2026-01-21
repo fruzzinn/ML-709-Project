@@ -186,9 +186,7 @@ class BaseTool(ABC):
             "total_execution_time_ms": self._total_execution_time,
             "error_count": self._error_count,
             "average_execution_time_ms": (
-                self._total_execution_time / self._call_count
-                if self._call_count > 0
-                else 0
+                self._total_execution_time / self._call_count if self._call_count > 0 else 0
             ),
         }
 

@@ -129,11 +129,7 @@ class BaseProvider(ABC):
 
     def get_statistics(self) -> dict[str, Any]:
         """Get provider statistics."""
-        avg_latency = (
-            self._total_latency_ms / self._request_count
-            if self._request_count > 0
-            else 0
-        )
+        avg_latency = self._total_latency_ms / self._request_count if self._request_count > 0 else 0
 
         return {
             "provider": self.name,

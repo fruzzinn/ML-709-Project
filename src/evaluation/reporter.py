@@ -88,13 +88,15 @@ class ExperimentReporter:
         ]
 
         if failure_analysis:
-            lines.extend([
-                "",
-                "Failure Analysis:",
-                f"  - Total Failures: {failure_analysis.get('total_failures', 0)}",
-                f"  - Max Cascade Depth: {failure_analysis.get('cascade_depth', {}).get('max', 0)}",
-                f"  - Avg Cascade Depth: {failure_analysis.get('cascade_depth', {}).get('average', 0):.2f}",
-            ])
+            lines.extend(
+                [
+                    "",
+                    "Failure Analysis:",
+                    f"  - Total Failures: {failure_analysis.get('total_failures', 0)}",
+                    f"  - Max Cascade Depth: {failure_analysis.get('cascade_depth', {}).get('max', 0)}",
+                    f"  - Avg Cascade Depth: {failure_analysis.get('cascade_depth', {}).get('average', 0):.2f}",
+                ]
+            )
 
             vulnerable = failure_analysis.get("vulnerable_components", {})
             if vulnerable:

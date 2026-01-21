@@ -122,7 +122,9 @@ Provide specific verification strategies.""",
         """Generate a prompt for the given template and context."""
         self._generation_count += 1
 
-        system_prompt = self.SYSTEM_PROMPTS.get(template, self.SYSTEM_PROMPTS[PromptTemplate.DEFENSE_DESIGN])
+        system_prompt = self.SYSTEM_PROMPTS.get(
+            template, self.SYSTEM_PROMPTS[PromptTemplate.DEFENSE_DESIGN]
+        )
         user_prompt = self._build_user_prompt(template, context)
 
         self._log.debug(

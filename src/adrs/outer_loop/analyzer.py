@@ -185,7 +185,7 @@ class ExperimentAnalyzer:
             # Compute significance (R-squared)
             if len(values) > 2:
                 correlation = np.corrcoef(x, y)[0, 1]
-                significance = correlation ** 2
+                significance = correlation**2
             else:
                 significance = 0.0
         else:
@@ -225,12 +225,14 @@ class ExperimentAnalyzer:
 
         # Basic info and rankings
         for sol in sorted(solutions, key=lambda x: x.fitness, reverse=True):
-            comparison["solutions"].append({
-                "id": sol.id,
-                "name": sol.name,
-                "fitness": sol.fitness,
-                "generation": sol.generation,
-            })
+            comparison["solutions"].append(
+                {
+                    "id": sol.id,
+                    "name": sol.name,
+                    "fitness": sol.fitness,
+                    "generation": sol.generation,
+                }
+            )
             comparison["fitness_ranking"].append(sol.id)
 
         # Compare metrics
@@ -244,16 +246,18 @@ class ExperimentAnalyzer:
 
         # Compute behavior distances
         for i, sol1 in enumerate(solutions):
-            for sol2 in solutions[i + 1:]:
+            for sol2 in solutions[i + 1 :]:
                 distance = self._behavior_distance(
                     sol1.behavior_descriptor,
                     sol2.behavior_descriptor,
                 )
-                comparison["behavior_distances"].append({
-                    "solution_1": sol1.id,
-                    "solution_2": sol2.id,
-                    "distance": distance,
-                })
+                comparison["behavior_distances"].append(
+                    {
+                        "solution_1": sol1.id,
+                        "solution_2": sol2.id,
+                        "distance": distance,
+                    }
+                )
 
         return dict(comparison)
 
@@ -270,11 +274,13 @@ class ExperimentAnalyzer:
             evaluations = self.storage.get_evaluations(solution.id)
             for eval_data in evaluations:
                 attack_type = eval_data.get("attack_type", "unknown")
-                attack_data[attack_type].append({
-                    "success_rate": eval_data.get("success_rate", 0),
-                    "detection_rate": eval_data.get("detection_rate", 0),
-                    "latency_ms": eval_data.get("latency_ms", 0),
-                })
+                attack_data[attack_type].append(
+                    {
+                        "success_rate": eval_data.get("success_rate", 0),
+                        "detection_rate": eval_data.get("detection_rate", 0),
+                        "latency_ms": eval_data.get("latency_ms", 0),
+                    }
+                )
 
         analysis = {}
         for attack_type, data in attack_data.items():
@@ -379,7 +385,7 @@ class ExperimentAnalyzer:
         # Compute pairwise distances
         distances = []
         for i, b1 in enumerate(behaviors):
-            for b2 in behaviors[i + 1:]:
+            for b2 in behaviors[i + 1 :]:
                 distances.append(self._behavior_distance(b1, b2))
 
         if distances:
@@ -423,9 +429,7 @@ class ExperimentAnalyzer:
 
         # Check for improvement potential
         if fitness_data.get("max", 0) < 0.7:
-            recommendations.append(
-                "Best fitness below 0.7 - consider new defense architectures"
-            )
+            recommendations.append("Best fitness below 0.7 - consider new defense architectures")
 
         # Check sample size
         if summary.get("num_solutions", 0) < 10:
@@ -460,31 +464,37 @@ class ExperimentAnalyzer:
         for key, value in report.get("summary", {}).items():
             lines.append(f"  {key}: {value}")
 
-        lines.extend([
-            "",
-            "TRENDS",
-            "-" * 40,
-        ])
+        lines.extend(
+            [
+                "",
+                "TRENDS",
+                "-" * 40,
+            ]
+        )
 
         for metric, data in report.get("trends", {}).items():
             lines.append(f"  {metric}:")
             for key, value in data.items():
                 lines.append(f"    {key}: {value}")
 
-        lines.extend([
-            "",
-            "TOP SOLUTIONS",
-            "-" * 40,
-        ])
+        lines.extend(
+            [
+                "",
+                "TOP SOLUTIONS",
+                "-" * 40,
+            ]
+        )
 
         for sol in report.get("top_solutions", []):
             lines.append(f"  #{sol['id']} {sol['name']}: fitness={sol['fitness']:.4f}")
 
-        lines.extend([
-            "",
-            "RECOMMENDATIONS",
-            "-" * 40,
-        ])
+        lines.extend(
+            [
+                "",
+                "RECOMMENDATIONS",
+                "-" * 40,
+            ]
+        )
 
         for rec in report.get("recommendations", []):
             lines.append(f"  - {rec}")

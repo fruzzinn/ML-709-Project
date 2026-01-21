@@ -183,8 +183,7 @@ class FailurePropagationAnalyzer:
             ],
             "vulnerable_components": vulnerable,
             "most_impactful": [
-                {"id": n.node_id, "component": n.component, "impact": i}
-                for n, i in impactful
+                {"id": n.node_id, "component": n.component, "impact": i} for n, i in impactful
             ],
         }
 

@@ -117,11 +117,13 @@ class LLMClient:
             tool_calls = []
             if message.tool_calls:
                 for tc in message.tool_calls:
-                    tool_calls.append({
-                        "id": tc.id,
-                        "name": tc.function.name,
-                        "arguments": self._parse_arguments(tc.function.arguments),
-                    })
+                    tool_calls.append(
+                        {
+                            "id": tc.id,
+                            "name": tc.function.name,
+                            "arguments": self._parse_arguments(tc.function.arguments),
+                        }
+                    )
 
             return LLMResponse(
                 content=message.content or "",

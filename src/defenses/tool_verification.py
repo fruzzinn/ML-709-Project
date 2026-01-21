@@ -49,8 +49,7 @@ class ToolVerificationDefense(Defense):
 
         # Compiled patterns for efficiency
         self._compiled_patterns = [
-            (re.compile(pattern, re.IGNORECASE), name)
-            for pattern, name in self.SUSPICIOUS_PATTERNS
+            (re.compile(pattern, re.IGNORECASE), name) for pattern, name in self.SUSPICIOUS_PATTERNS
         ]
 
     @property

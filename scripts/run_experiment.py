@@ -72,16 +72,22 @@ async def run_experiment(config_path: str) -> None:
     defense_manager = DefenseManager()
 
     if config.defenses.tool_verification.get("enabled", True):
-        defense_manager.register(ToolVerificationDefense(
-            type_checking=config.defenses.tool_verification.get("type_checking", True),
-            injection_detection=config.defenses.tool_verification.get("injection_detection", True),
-        ))
+        defense_manager.register(
+            ToolVerificationDefense(
+                type_checking=config.defenses.tool_verification.get("type_checking", True),
+                injection_detection=config.defenses.tool_verification.get(
+                    "injection_detection", True
+                ),
+            )
+        )
 
     if config.defenses.self_consistency.get("enabled", True):
-        defense_manager.register(ConsistencyChecker(
-            threshold=config.defenses.self_consistency.get("threshold", 0.7),
-            hard_minimum=config.defenses.self_consistency.get("hard_minimum", 0.5),
-        ))
+        defense_manager.register(
+            ConsistencyChecker(
+                threshold=config.defenses.self_consistency.get("threshold", 0.7),
+                hard_minimum=config.defenses.self_consistency.get("hard_minimum", 0.5),
+            )
+        )
 
     if config.defenses.rollback.get("enabled", True):
         defense_manager.register(RollbackDefense())
