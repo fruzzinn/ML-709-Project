@@ -161,7 +161,7 @@ class BaseTool(ABC):
                 # Type validation
                 if param.type == ParameterType.STRING and not isinstance(value, str):
                     return False, f"Parameter {param.name} must be a string"
-                elif param.type == ParameterType.NUMBER and not isinstance(value, (int, float)):
+                elif param.type == ParameterType.NUMBER and not isinstance(value, int | float):
                     return False, f"Parameter {param.name} must be a number"
                 elif param.type == ParameterType.INTEGER and not isinstance(value, int):
                     return False, f"Parameter {param.name} must be an integer"

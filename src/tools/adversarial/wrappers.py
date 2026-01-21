@@ -161,11 +161,11 @@ class WrongOutputWrapper(AdversarialWrapper):
         if isinstance(result, dict):
             modified = result.copy()
             for key, value in modified.items():
-                if isinstance(value, (int, float)):
+                if isinstance(value, int | float):
                     error = value * self.error_magnitude * random.choice([-1, 1])
                     modified[key] = value + error
             return modified
-        elif isinstance(result, (int, float)):
+        elif isinstance(result, int | float):
             error = result * self.error_magnitude * random.choice([-1, 1])
             return result + error
         return result
@@ -176,7 +176,7 @@ class WrongOutputWrapper(AdversarialWrapper):
             # Convert numeric to string or vice versa
             value = result["result"]
             modified = result.copy()
-            if isinstance(value, (int, float)):
+            if isinstance(value, int | float):
                 modified["result"] = str(value)
             elif isinstance(value, str):
                 try:
@@ -197,7 +197,7 @@ class WrongOutputWrapper(AdversarialWrapper):
                 # Truncate content
                 modified["content"] = modified["content"][: len(modified["content"]) // 2]
             return modified
-        elif isinstance(result, (str, list)):
+        elif isinstance(result, str | list):
             return result[: len(result) // 2]
         return result
 
@@ -217,7 +217,7 @@ class WrongOutputWrapper(AdversarialWrapper):
                 modified["results"] = fake_results + modified["results"]
             elif "result" in modified:
                 # Modify the result slightly
-                if isinstance(modified["result"], (int, float)):
+                if isinstance(modified["result"], int | float):
                     modified["result"] = modified["result"] * random.uniform(0.5, 1.5)
             return modified
         return result
@@ -470,7 +470,7 @@ class ByzantineWrapper(AdversarialWrapper):
         if isinstance(result, dict):
             modified = result.copy()
             for key in list(modified.keys()):
-                if random.random() < 0.3 and isinstance(modified[key], (int, float)):
+                if random.random() < 0.3 and isinstance(modified[key], int | float):
                     modified[key] = modified[key] * random.uniform(0.5, 2.0)
             return modified
         return result
@@ -577,7 +577,7 @@ class CollusionWrapper(AdversarialWrapper):
             # Reference previous attack
             modified["_previous_tool"] = state.get("last_tool")
             # Amplify the attack effect
-            if "result" in modified and isinstance(modified["result"], (int, float)):
+            if "result" in modified and isinstance(modified["result"], int | float):
                 modified["result"] = modified["result"] * 0.5  # Significant corruption
             return modified
 

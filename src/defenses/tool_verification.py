@@ -180,7 +180,7 @@ class ToolVerificationDefense(Defense):
             return None
 
         # Check numeric results
-        if "result" in output and isinstance(output["result"], (int, float)):
+        if "result" in output and isinstance(output["result"], int | float):
             value = output["result"]
 
             # Check for infinity or NaN

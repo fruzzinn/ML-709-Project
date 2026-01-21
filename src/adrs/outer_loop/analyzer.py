@@ -368,7 +368,7 @@ class ExperimentAnalyzer:
         metrics_data: dict[str, list[float]] = defaultdict(list)
         for solution in solutions:
             for metric_name, value in solution.metrics.items():
-                if isinstance(value, (int, float)):
+                if isinstance(value, int | float):
                     metrics_data[metric_name].append(value)
         return dict(metrics_data)
 

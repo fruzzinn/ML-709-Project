@@ -156,7 +156,7 @@ class CalculatorTool(BaseTool):
         """Recursively evaluate an AST node with strict whitelisting."""
         # Numbers - safe, just return the value
         if isinstance(node, ast.Constant):
-            if isinstance(node.value, (int, float)):
+            if isinstance(node.value, int | float):
                 return node.value
             raise ValueError(f"Unsupported constant type: {type(node.value)}")
 

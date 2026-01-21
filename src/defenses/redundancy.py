@@ -205,7 +205,7 @@ class RedundancyDefense(Defense):
                     return False
             return True
 
-        elif isinstance(result1, (int, float)):
+        elif isinstance(result1, int | float):
             # Numeric comparison with tolerance
             if result1 == 0 and result2 == 0:
                 return True
