@@ -181,7 +181,7 @@ class CodeExecutorTool(BaseTool):
 
                 # Use builtins to run compiled code in sandbox
                 builtins = __builtins__ if isinstance(__builtins__, dict) else vars(__builtins__)
-                sandbox_exec = builtins.get("exec", None)  # type: ignore
+                sandbox_exec = builtins.get("exec", None)
                 if sandbox_exec:
                     sandbox_exec(compiled, run_globals, run_locals)
 

@@ -8,13 +8,11 @@ from src.adrs.outer_loop.analyzer import (
 from src.adrs.outer_loop.experiment_manager import (
     ExperimentManager,
     ExperimentNode,
-    ExperimentStatus,
 )
 
 __all__ = [
     "ExperimentManager",
     "ExperimentNode",
-    "ExperimentStatus",
     "ExperimentAnalyzer",
     "AnalysisResult",
     "TrendAnalysis",
