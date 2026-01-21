@@ -110,7 +110,7 @@ class ExperimentManager:
         selected = []
 
         # Get top nodes from frontier
-        candidates = []
+        candidates: list[ExperimentNode] = []
         while self._frontier and len(candidates) < n * 2:
             node = heapq.heappop(self._frontier)
             if node.depth < self.max_depth:

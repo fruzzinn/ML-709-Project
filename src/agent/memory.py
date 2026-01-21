@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections import deque
+from collections.abc import Iterator
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any
@@ -210,7 +211,7 @@ class WorkingMemory:
     def __contains__(self, key: str) -> bool:
         return key in self._entries
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[MemoryEntry]:
         return iter(self._entries.values())
 
     @property

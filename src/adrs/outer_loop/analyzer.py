@@ -78,7 +78,7 @@ class ExperimentAnalyzer:
         fitness_values = [s.fitness for s in solutions]
         metrics_data = self._aggregate_metrics(solutions)
 
-        summary = {
+        summary: dict[str, Any] = {
             "generation": generation,
             "num_solutions": len(solutions),
             "fitness": {
@@ -210,13 +210,13 @@ class ExperimentAnalyzer:
         if not self.storage:
             raise ValueError("Storage required for solution comparison")
 
-        solutions = [self.storage.get_solution(sid) for sid in solution_ids]
-        solutions = [s for s in solutions if s is not None]
+        raw_solutions = [self.storage.get_solution(sid) for sid in solution_ids]
+        solutions: list[StoredSolution] = [s for s in raw_solutions if s is not None]
 
         if len(solutions) < 2:
             return {"error": "Need at least 2 solutions to compare"}
 
-        comparison = {
+        comparison: dict[str, Any] = {
             "solutions": [],
             "fitness_ranking": [],
             "metric_comparison": defaultdict(dict),
