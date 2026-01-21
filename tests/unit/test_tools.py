@@ -11,11 +11,11 @@ from src.tools.registry import ToolRegistry
 class TestCalculatorTool:
     """Tests for CalculatorTool."""
 
-    @pytest.fixture
+    @pytest.fixture  # type: ignore[misc]
     def calculator(self) -> CalculatorTool:
         return CalculatorTool()
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio  # type: ignore[misc]
     async def test_basic_arithmetic(self, calculator: CalculatorTool) -> None:
         """Test basic arithmetic operations."""
         result = await calculator.execute({"expression": "2 + 2"})
@@ -27,7 +27,7 @@ class TestCalculatorTool:
         result = await calculator.execute({"expression": "100 / 4"})
         assert result["result"] == 25
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio  # type: ignore[misc]
     async def test_math_functions(self, calculator: CalculatorTool) -> None:
         """Test math functions."""
         result = await calculator.execute({"expression": "sqrt(16)"})
@@ -36,20 +36,20 @@ class TestCalculatorTool:
         result = await calculator.execute({"expression": "pow(2, 3)"})
         assert result["result"] == 8
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio  # type: ignore[misc]
     async def test_constants(self, calculator: CalculatorTool) -> None:
         """Test mathematical constants."""
         result = await calculator.execute({"expression": "pi"})
         assert abs(result["result"] - 3.14159) < 0.001
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio  # type: ignore[misc]
     async def test_division_by_zero(self, calculator: CalculatorTool) -> None:
         """Test division by zero handling."""
         result = await calculator.execute({"expression": "1 / 0"})
         assert "error" in result
         assert "Division by zero" in result["error"]
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio  # type: ignore[misc]
     async def test_invalid_expression(self, calculator: CalculatorTool) -> None:
         """Test invalid expression handling."""
         result = await calculator.execute({"expression": "invalid"})
@@ -59,11 +59,11 @@ class TestCalculatorTool:
 class TestWebSearchTool:
     """Tests for WebSearchTool."""
 
-    @pytest.fixture
+    @pytest.fixture  # type: ignore[misc]
     def search(self) -> WebSearchTool:
         return WebSearchTool(mock_mode=True)
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio  # type: ignore[misc]
     async def test_basic_search(self, search: WebSearchTool) -> None:
         """Test basic search functionality."""
         result = await search.execute({"query": "test query"})
@@ -71,7 +71,7 @@ class TestWebSearchTool:
         assert "query" in result
         assert result["query"] == "test query"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio  # type: ignore[misc]
     async def test_mock_results(self, search: WebSearchTool) -> None:
         """Test mock results configuration."""
         search.set_mock_results(
@@ -89,7 +89,7 @@ class TestWebSearchTool:
         assert len(result["results"]) == 1
         assert result["results"][0]["title"] == "Python.org"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio  # type: ignore[misc]
     async def test_num_results(self, search: WebSearchTool) -> None:
         """Test num_results parameter."""
         result = await search.execute({"query": "test", "num_results": 3})
@@ -99,18 +99,18 @@ class TestWebSearchTool:
 class TestFileReaderTool:
     """Tests for FileReaderTool."""
 
-    @pytest.fixture
+    @pytest.fixture  # type: ignore[misc]
     def reader(self) -> FileReaderTool:
         return FileReaderTool(mock_mode=True)
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio  # type: ignore[misc]
     async def test_mock_read(self, reader: FileReaderTool) -> None:
         """Test mock file reading."""
         result = await reader.execute({"file_path": "test.txt"})
         assert "content" in result
         assert result["file_path"] == "test.txt"
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio  # type: ignore[misc]
     async def test_configured_mock(self, reader: FileReaderTool) -> None:
         """Test configured mock content."""
         reader.set_mock_file("config.yaml", "key: value")
@@ -122,7 +122,7 @@ class TestFileReaderTool:
 class TestToolRegistry:
     """Tests for ToolRegistry."""
 
-    @pytest.fixture
+    @pytest.fixture  # type: ignore[misc]
     def registry(self) -> ToolRegistry:
         registry = ToolRegistry()
         registry.register(CalculatorTool())
@@ -151,7 +151,7 @@ class TestToolRegistry:
             assert defn["type"] == "function"
             assert "function" in defn
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio  # type: ignore[misc]
     async def test_execute(self, registry: ToolRegistry) -> None:
         """Test tool execution through registry."""
         result = await registry.execute("calculator", {"expression": "1 + 1"})

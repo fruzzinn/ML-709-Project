@@ -62,12 +62,12 @@ class TestPredefinedScenarios:
 class TestWrongOutputWrapper:
     """Tests for WrongOutputWrapper."""
 
-    @pytest.fixture
+    @pytest.fixture  # type: ignore[misc]
     def wrapper(self) -> WrongOutputWrapper:
         tool = CalculatorTool()
         return WrongOutputWrapper(tool, attack_probability=1.0)  # Always attack for testing
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio  # type: ignore[misc]
     async def test_wrapper_modifies_result(self, wrapper: WrongOutputWrapper) -> None:
         """Test that wrapper can modify results."""
         # Run multiple times - at least one should be different
@@ -77,7 +77,7 @@ class TestWrongOutputWrapper:
         # Result should be modified (attack probability is 1.0)
         assert wrapper.attack_count > 0
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio  # type: ignore[misc]
     async def test_attack_recorded(self, wrapper: WrongOutputWrapper) -> None:
         """Test that attacks are recorded."""
         await wrapper.execute({"expression": "5 + 5"})
